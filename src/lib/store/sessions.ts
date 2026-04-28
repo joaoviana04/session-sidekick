@@ -152,7 +152,7 @@ export function useSessions(projectId?: string | null) {
       row = patch;
       setSessions((arr) => arr.map((s) => s.id === id ? { ...s, ...patch } : s));
     }
-    const { error } = await supabase.from("sessions").update(toRowPatch(row)).eq("id", id);
+    const { error } = await supabase.from("sessions").update(toRowPatch(row) as any).eq("id", id);
     if (error) { console.error(error); refetch(); }
   }, [user, sessions, refetch]);
 
