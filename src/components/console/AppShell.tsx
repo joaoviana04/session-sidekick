@@ -1,13 +1,15 @@
 import { ReactNode, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Mic, Sliders, Wrench, Radio, Plus } from "lucide-react";
+import { Mic, Sliders, Wrench, Radio, Plus, FolderKanban, Users, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSessions } from "@/lib/store/sessions";
 import { NewSessionDialog } from "./NewSessionDialog";
+import { useAuth } from "@/hooks/useAuth";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const location = useLocation();
   const { sessions } = useSessions();
+  const { user, signOut } = useAuth();
   const [open, setOpen] = useState(false);
   const [time, setTime] = useState(() => new Date());
 
@@ -18,6 +20,8 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   const nav = [
     { to: "/", label: "Sessions", icon: Radio },
+    { to: "/projects", label: "Projects", icon: FolderKanban },
+    { to: "/clients", label: "Clients", icon: Users },
     { to: "/tools", label: "Tools", icon: Wrench },
   ];
 
@@ -82,6 +86,18 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
 
         <div className="mt-auto p-4 border-t border-border">
+          {user && (
+            <div className="flex items-center gap-2 mb-3 text-xs">
+              <div className="h-7 w-7 rounded-full bg-surface-2 grid place-items-center font-mono text-[10px] text-muted-foreground shrink-0">
+                {user.email?.[0]?.toUpperCase() ?? "?"}
+              </div>
+              <span className="truncate flex-1 text-muted-foreground">{user.email}</span>
+              <button onClick={signOut} title="Sign out"
+                className="text-muted-foreground hover:text-destructive transition">
+                <LogOut className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          )}
           <div className="flex items-center gap-2">
             <span className="led animate-pulse-led" />
             <span className="label-mono">live</span>
