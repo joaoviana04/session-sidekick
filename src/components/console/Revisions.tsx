@@ -1,7 +1,9 @@
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Link, LinkOff, Copy } from "lucide-react";
 import { useSession, helpers } from "@/lib/store/sessions";
+import { useSessionShare } from "@/lib/store/shares";
 import type { Session, RevisionStatus } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 const statusColors: Record<RevisionStatus, string> = {
   draft: "bg-surface-3 text-muted-foreground border-border",
@@ -12,6 +14,7 @@ const statusColors: Record<RevisionStatus, string> = {
 
 export function Revisions({ session }: { session: Session }) {
   const { update } = useSession(session.id);
+  const { token, loading: shareLoading, create, revoke } = useSessionShare(session.id);
   const revs = session.revisions ?? [];
 
   const setRevs = (fn: (r: typeof revs) => typeof revs) =>
@@ -22,16 +25,64 @@ export function Revisions({ session }: { session: Session }) {
     setRevs((arr) => [helpers.newRevision(v), ...arr]);
   };
 
+  const copyLink = (t: string) => {
+    navigator.clipboard.writeText(`${window.location.origin}/share/${t}`);
+    toast.success("Share link copied to clipboard.");
+  };
+
+  const handleShare = async () => {
+    if (token) {
+      copyLink(token);
+    } else {
+      const t = await create();
+      if (t) copyLink(t);
+      else toast.error("Could not create share link.");
+    }
+  };
+
+  const handleRevoke = async () => {
+    await revoke();
+    toast.success("Share link revoked.");
+  };
+
   return (
     <div className="panel">
-      <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+      <div className="px-4 py-3 border-b border-border flex items-center justify-between gap-2">
         <div>
           <div className="font-display font-semibold">Revisions</div>
           <div className="label-mono mt-0.5">Client feedback log</div>
         </div>
-        <button onClick={addRev} className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-sm bg-gradient-amber text-primary-foreground font-semibold">
-          <Plus className="h-3.5 w-3.5" /> Revision
-        </button>
+        <div className="flex items-center gap-1.5 flex-shrink-0">
+          {!shareLoading && token && (
+            <button
+              onClick={() => copyLink(token)}
+              title="Copy share link"
+              className="flex items-center gap-1 text-xs px-2 py-1.5 rounded-sm border border-border text-muted-foreground hover:text-foreground transition"
+            >
+              <Copy className="h-3 w-3" />
+            </button>
+          )}
+          {!shareLoading && (
+            <button
+              onClick={token ? handleRevoke : handleShare}
+              className={cn(
+                "flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-sm font-semibold transition",
+                token
+                  ? "border border-border text-muted-foreground hover:text-destructive hover:border-destructive"
+                  : "bg-gradient-amber text-primary-foreground hover:opacity-90"
+              )}
+            >
+              {token ? (
+                <><LinkOff className="h-3.5 w-3.5" /> Revoke</>
+              ) : (
+                <><Link className="h-3.5 w-3.5" /> Share</>
+              )}
+            </button>
+          )}
+          <button onClick={addRev} className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-sm bg-surface-2 text-foreground border border-border font-semibold hover:bg-surface-3 transition">
+            <Plus className="h-3.5 w-3.5" /> Revision
+          </button>
+        </div>
       </div>
       <div className="divide-y divide-border/60 max-h-[600px] overflow-auto">
         {revs.map((r) => (
