@@ -14,7 +14,6 @@ import Auth from "./pages/Auth.tsx";
 import Projects from "./pages/Projects.tsx";
 import ProjectView from "./pages/ProjectView.tsx";
 import Clients from "./pages/Clients.tsx";
-import ShareView from "./pages/ShareView.tsx";
 
 const queryClient = new QueryClient();
 
@@ -34,7 +33,6 @@ const App = () => (
               <Route path="/clients" element={<ProtectedRoute><Clients /></ProtectedRoute>} />
               <Route path="/session/:id" element={<ProtectedRoute><SessionView /></ProtectedRoute>} />
               <Route path="/tools" element={<ProtectedRoute><Tools /></ProtectedRoute>} />
-              <Route path="/share/:token" element={<ShareView />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </ErrorBoundary>

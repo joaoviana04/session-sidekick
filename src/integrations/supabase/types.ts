@@ -14,30 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      session_shares: {
-        Row: {
-          token: string
-          session_id: string
-          created_by: string
-          created_at: string
-          revoked_at: string | null
-        }
-        Insert: {
-          token: string
-          session_id: string
-          created_by: string
-          created_at?: string
-          revoked_at?: string | null
-        }
-        Update: {
-          token?: string
-          session_id?: string
-          created_by?: string
-          created_at?: string
-          revoked_at?: string | null
-        }
-        Relationships: []
-      }
       clients: {
         Row: {
           created_at: string
@@ -209,17 +185,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_shared_session: {
-        Args: { p_token: string }
-        Returns: {
-          id: string
-          title: string
-          artist: string
-          type: string
-          revisions: unknown
-          created_at: string
-        } | null
-      }
+      [_ in never]: never
     }
     Enums: {
       session_type: "recording" | "mix"
