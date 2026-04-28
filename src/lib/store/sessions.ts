@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Session, SessionType, InputChannel, Take, ChecklistItem, ReferenceTrack, Revision } from "@/lib/types";
 import { useAuth } from "@/hooks/useAuth";
@@ -83,6 +83,7 @@ export function useSessions(projectId?: string | null) {
   const { user } = useAuth();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
+  const channelName = useRef(`sessions-changes-${uid()}`);
 
   const refetch = useCallback(async () => {
     if (!user) { setSessions([]); setLoading(false); return; }
@@ -103,7 +104,7 @@ export function useSessions(projectId?: string | null) {
   useEffect(() => {
     if (!user) return;
     const channel = supabase
-      .channel("sessions-changes")
+      .channel(channelName.current)
       .on("postgres_changes", { event: "*", schema: "public", table: "sessions", filter: `user_id=eq.${user.id}` }, () => {
         refetch();
       })
