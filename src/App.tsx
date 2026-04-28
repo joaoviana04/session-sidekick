@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import SessionView from "./pages/SessionView.tsx";
@@ -23,16 +24,18 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <Routes>
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
-            <Route path="/projects" element={<ProtectedRoute><Projects /></ProtectedRoute>} />
-            <Route path="/projects/:id" element={<ProtectedRoute><ProjectView /></ProtectedRoute>} />
-            <Route path="/clients" element={<ProtectedRoute><Clients /></ProtectedRoute>} />
-            <Route path="/session/:id" element={<ProtectedRoute><SessionView /></ProtectedRoute>} />
-            <Route path="/tools" element={<ProtectedRoute><Tools /></ProtectedRoute>} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <ErrorBoundary>
+            <Routes>
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+              <Route path="/projects" element={<ProtectedRoute><Projects /></ProtectedRoute>} />
+              <Route path="/projects/:id" element={<ProtectedRoute><ProjectView /></ProtectedRoute>} />
+              <Route path="/clients" element={<ProtectedRoute><Clients /></ProtectedRoute>} />
+              <Route path="/session/:id" element={<ProtectedRoute><SessionView /></ProtectedRoute>} />
+              <Route path="/tools" element={<ProtectedRoute><Tools /></ProtectedRoute>} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </ErrorBoundary>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
