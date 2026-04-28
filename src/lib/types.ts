@@ -53,6 +53,7 @@ export interface Session {
   title: string;
   artist: string;
   createdAt: string;
+  projectId?: string | null;
   // shared
   notes: string;
   bpm?: number;
@@ -67,4 +68,20 @@ export interface Session {
   revisions?: Revision[];
   lufsTarget?: string;
   truePeakTarget?: string;
+}
+
+export interface Client {
+  id: string;
+  name: string;
+  notes: string;
+  createdAt: string;
+}
+
+export interface Project {
+  id: string;
+  name: string;
+  notes: string;
+  color: string;
+  clientId: string | null;
+  createdAt: string;
 }
