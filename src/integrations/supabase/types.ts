@@ -14,7 +14,172 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      clients: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          notes: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          notes?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          client_id: string | null
+          color: string | null
+          created_at: string
+          id: string
+          name: string
+          notes: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          client_id?: string | null
+          color?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          notes?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          client_id?: string | null
+          color?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projects_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sessions: {
+        Row: {
+          artist: string | null
+          bpm: string | null
+          checklist: Json
+          created_at: string
+          id: string
+          inputs: Json
+          key: string | null
+          lufs_target: string | null
+          notes: string | null
+          project_id: string | null
+          references: Json
+          revisions: Json
+          sample_rate: string | null
+          takes: Json
+          title: string
+          true_peak_target: string | null
+          type: Database["public"]["Enums"]["session_type"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          artist?: string | null
+          bpm?: string | null
+          checklist?: Json
+          created_at?: string
+          id?: string
+          inputs?: Json
+          key?: string | null
+          lufs_target?: string | null
+          notes?: string | null
+          project_id?: string | null
+          references?: Json
+          revisions?: Json
+          sample_rate?: string | null
+          takes?: Json
+          title: string
+          true_peak_target?: string | null
+          type: Database["public"]["Enums"]["session_type"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          artist?: string | null
+          bpm?: string | null
+          checklist?: Json
+          created_at?: string
+          id?: string
+          inputs?: Json
+          key?: string | null
+          lufs_target?: string | null
+          notes?: string | null
+          project_id?: string | null
+          references?: Json
+          revisions?: Json
+          sample_rate?: string | null
+          takes?: Json
+          title?: string
+          true_peak_target?: string | null
+          type?: Database["public"]["Enums"]["session_type"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sessions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +188,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      session_type: "recording" | "mix"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +315,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      session_type: ["recording", "mix"],
+    },
   },
 } as const
