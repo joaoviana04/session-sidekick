@@ -26,21 +26,21 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <ErrorBoundary>
-            <Routes>
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/share/:token" element={<Share />} />
-              <Route element={<DataProvider><ProtectedShell /></DataProvider>}>
+          <DataProvider>
+            <ErrorBoundary>
+              <Routes>
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/share/:token" element={<Share />} />
                 <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
                 <Route path="/projects" element={<ProtectedRoute><Projects /></ProtectedRoute>} />
                 <Route path="/projects/:id" element={<ProtectedRoute><ProjectView /></ProtectedRoute>} />
                 <Route path="/clients" element={<ProtectedRoute><Clients /></ProtectedRoute>} />
                 <Route path="/session/:id" element={<ProtectedRoute><SessionView /></ProtectedRoute>} />
                 <Route path="/tools" element={<ProtectedRoute><Tools /></ProtectedRoute>} />
-              </Route>
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </ErrorBoundary>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </ErrorBoundary>
+          </DataProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
