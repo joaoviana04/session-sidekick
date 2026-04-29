@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { useSessions } from "@/lib/store/sessions";
 import { NewSessionDialog } from "./NewSessionDialog";
 import { useAuth } from "@/hooks/useAuth";
+import sessionsLogo from "@/assets/sessions-logo.png";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const location = useLocation();
@@ -30,11 +31,9 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* Sidebar */}
       <aside className="hidden md:flex w-64 shrink-0 flex-col border-r border-border bg-surface-1">
         <div className="px-5 py-5 border-b border-border flex items-center gap-3">
-          <div className="relative h-8 w-8 rounded-sm bg-gradient-amber grid place-items-center">
-            <span className="font-mono text-[11px] font-bold text-primary-foreground">CSL</span>
-          </div>
+          <img src={sessionsLogo} alt="Sessions" width={32} height={32} className="h-8 w-8" />
           <div>
-            <div className="font-display font-semibold leading-none">Console</div>
+            <div className="font-display font-semibold leading-none">Sessions</div>
             <div className="label-mono mt-1">studio companion</div>
           </div>
         </div>
@@ -110,10 +109,8 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       {/* Mobile top bar */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-surface-1 border-b border-border flex items-center px-4 py-3">
-        <div className="h-7 w-7 rounded-sm bg-gradient-amber grid place-items-center mr-2">
-          <span className="font-mono text-[10px] font-bold text-primary-foreground">CSL</span>
-        </div>
-        <span className="font-display font-semibold">Console</span>
+        <img src={sessionsLogo} alt="Sessions" width={28} height={28} className="h-7 w-7 mr-2" />
+        <span className="font-display font-semibold">Sessions</span>
         <button onClick={() => setOpen(true)} className="ml-auto rounded-sm bg-gradient-amber text-primary-foreground p-1.5">
           <Plus className="h-4 w-4" />
         </button>

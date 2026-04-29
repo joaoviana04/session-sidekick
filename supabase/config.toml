@@ -1,1 +1,4 @@
 project_id = "bdypfcnztbkvvrznnhxu"
+
+[functions.share-revisions]
+verify_jwt = false
