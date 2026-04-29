@@ -106,6 +106,95 @@ export type Database = {
           },
         ]
       }
+      revision_feedback: {
+        Row: {
+          client_name: string
+          created_at: string
+          decision: string
+          feedback: string
+          id: string
+          revision_id: string
+          session_id: string
+          share_id: string
+          updated_at: string
+        }
+        Insert: {
+          client_name?: string
+          created_at?: string
+          decision?: string
+          feedback?: string
+          id?: string
+          revision_id: string
+          session_id: string
+          share_id: string
+          updated_at?: string
+        }
+        Update: {
+          client_name?: string
+          created_at?: string
+          decision?: string
+          feedback?: string
+          id?: string
+          revision_id?: string
+          session_id?: string
+          share_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "revision_feedback_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "revision_feedback_share_id_fkey"
+            columns: ["share_id"]
+            isOneToOne: false
+            referencedRelation: "session_shares"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      session_shares: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          session_id: string
+          token: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          session_id: string
+          token?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          session_id?: string
+          token?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "session_shares_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sessions: {
         Row: {
           artist: string | null
