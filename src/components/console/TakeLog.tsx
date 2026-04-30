@@ -52,21 +52,21 @@ export function TakeLog({ session }: { session: Session }) {
           const r = ratingMap[t.rating];
           return (
             <div key={t.id} className="px-4 py-2.5 hover:bg-surface-2/50 group animate-fade-in">
-              <div className="flex items-center gap-3">
-                <span className="font-mono text-xs text-muted-foreground w-16 tabular-nums">
+              <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+                <span className="font-mono text-xs text-muted-foreground tabular-nums shrink-0">
                   {new Date(t.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })}
                 </span>
-                <span className="font-display font-semibold">{t.song}</span>
-                <span className="font-mono text-xs text-primary">#{t.number}</span>
-                <span className={cn("ml-auto px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider border", r.cls)}>
+                <span className="font-display font-semibold truncate min-w-0">{t.song}</span>
+                <span className="font-mono text-xs text-primary shrink-0">#{t.number}</span>
+                <span className={cn("ml-auto px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider border shrink-0", r.cls)}>
                   {r.label}
                 </span>
                 <button onClick={() => setTakes((arr) => arr.filter((x) => x.id !== t.id))}
-                  className="text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition">
+                  className="text-muted-foreground hover:text-destructive transition shrink-0 sm:opacity-0 sm:group-hover:opacity-100">
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
               </div>
-              <div className="flex items-center gap-1 mt-1.5 ml-[76px]">
+              <div className="flex items-center gap-1 mt-2 flex-wrap">
                 {(["keeper", "alt", "reject", "unrated"] as TakeRating[]).map((rt) => (
                   <button key={rt} onClick={() =>
                     setTakes((arr) => arr.map((x) => x.id === t.id ? { ...x, rating: rt } : x))}
@@ -80,7 +80,7 @@ export function TakeLog({ session }: { session: Session }) {
                 <input value={t.notes} onChange={(e) =>
                   setTakes((arr) => arr.map((x) => x.id === t.id ? { ...x, notes: e.target.value } : x))}
                   placeholder="Notes…"
-                  className="flex-1 ml-2 bg-transparent text-xs px-2 py-1 rounded-sm hover:bg-surface-2 focus:bg-surface-2 outline-none focus:ring-1 focus:ring-primary" />
+                  className="flex-1 min-w-[120px] ml-2 bg-transparent text-xs px-2 py-1 rounded-sm hover:bg-surface-2 focus:bg-surface-2 outline-none focus:ring-1 focus:ring-primary" />
               </div>
             </div>
           );

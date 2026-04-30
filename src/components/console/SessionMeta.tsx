@@ -16,7 +16,7 @@ export function SessionMeta({ session }: { session: Session }) {
       ];
 
   return (
-    <div className="panel p-4 grid grid-cols-3 gap-3">
+    <div className="panel p-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
       {fields.map((f) => (
         <label key={f.key} className="block">
           <div className="label-mono mb-1">{f.label}</div>
