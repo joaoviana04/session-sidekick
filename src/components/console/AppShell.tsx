@@ -140,7 +140,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             className="absolute inset-0 bg-black/60 animate-fade-in"
             onClick={() => setMenuOpen(false)}
           />
-          <aside className="relative w-72 max-w-[85vw] bg-surface-1 border-r border-border flex flex-col animate-slide-in-right">
+          <aside className="relative w-72 max-w-[85vw] bg-surface-1 border-r border-border flex flex-col animate-fade-in">
             <div className="px-5 py-4 border-b border-border flex items-center gap-3">
               <img src={sessionsLogo} alt="Sessions" width={32} height={32} className="h-8 w-8" />
               <div className="flex-1">
