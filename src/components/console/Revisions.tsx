@@ -135,13 +135,13 @@ export function Revisions({ session }: { session: Session }) {
           const fbs = feedback.filter((f) => f.revision_id === r.id);
           return (
           <div key={r.id} className="p-4 group hover:bg-surface-2/40">
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-2">
               <input value={r.version} onChange={(e) => setRevs((a) => a.map((x) => x.id === r.id ? { ...x, version: e.target.value } : x))}
                 className="w-16 font-mono text-lg font-bold text-primary bg-transparent outline-none focus:bg-surface-2 rounded-sm px-1" />
               <span className="text-xs text-muted-foreground font-mono">
                 {new Date(r.date).toLocaleDateString()}
               </span>
-              <div className="ml-auto flex items-center gap-1">
+              <div className="w-full sm:w-auto sm:ml-auto flex items-center gap-1 flex-wrap">
                 {(["draft", "sent", "revise", "approved"] as RevisionStatus[]).map((st) => (
                   <button key={st} onClick={() => setRevs((a) => a.map((x) => x.id === r.id ? { ...x, status: st } : x))}
                     className={cn(
@@ -150,7 +150,7 @@ export function Revisions({ session }: { session: Session }) {
                     )}>{st}</button>
                 ))}
                 <button onClick={() => setRevs((a) => a.filter((x) => x.id !== r.id))}
-                  className="text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 p-1 ml-1">
+                  className="text-muted-foreground hover:text-destructive p-1 ml-auto sm:ml-1 sm:opacity-0 sm:group-hover:opacity-100">
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
               </div>
