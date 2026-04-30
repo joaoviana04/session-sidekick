@@ -128,14 +128,14 @@ const Share = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-surface-1">
-        <div className="max-w-3xl mx-auto px-6 py-4 flex items-center gap-3">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-3">
           <img src={sessionsLogo} alt="Sessions" width={32} height={32} className="h-8 w-8" />
           <div className="font-display font-semibold">Sessions</div>
           <div className="ml-auto label-mono">client review</div>
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-6 py-8">
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <div className="mb-8 flex items-center gap-3">
           <div className="h-10 w-10 rounded-sm bg-surface-2 grid place-items-center text-primary">
             <Icon className="h-5 w-5" />

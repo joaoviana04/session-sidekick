@@ -18,7 +18,7 @@ const Clients = () => {
 
   return (
     <AppShell>
-      <div className="max-w-4xl mx-auto px-6 lg:px-10 py-10">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-10">
         <div className="label-mono mb-3">// roster</div>
         <h1 className="font-display text-4xl font-bold tracking-tight mb-8">Clients<span className="text-primary">.</span></h1>
 

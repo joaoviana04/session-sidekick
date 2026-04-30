@@ -34,7 +34,7 @@ const ProjectView = () => {
 
   return (
     <AppShell>
-      <div className="max-w-6xl mx-auto px-6 lg:px-10 py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-8">
         <Link to="/projects" className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1 mb-4">
           <ArrowLeft className="h-3.5 w-3.5" /> Projects
         </Link>
@@ -43,7 +43,7 @@ const ProjectView = () => {
           <div className="label-mono mb-2">// project</div>
           <input value={project.name} onChange={(e) => update(project.id, { name: e.target.value })}
             className="font-display text-3xl md:text-4xl font-bold tracking-tight bg-transparent outline-none focus:bg-surface-2 rounded-sm px-1 -ml-1 w-full" />
-          <div className="mt-2 flex items-center gap-3">
+          <div className="mt-2 flex flex-wrap items-center gap-3">
             <select value={project.clientId ?? ""} onChange={(e) => update(project.id, { clientId: e.target.value || null })}
               className="bg-surface-2 border border-border rounded-sm px-2 py-1 text-xs outline-none">
               <option value="">— No client —</option>

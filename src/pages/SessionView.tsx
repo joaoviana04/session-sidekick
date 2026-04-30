@@ -35,7 +35,7 @@ const SessionView = () => {
 
   return (
     <AppShell>
-      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-8">
         <Link to="/" className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1 mb-4">
           <ArrowLeft className="h-3.5 w-3.5" /> Sessions
         </Link>
@@ -51,7 +51,7 @@ const SessionView = () => {
               className="font-display text-2xl md:text-3xl font-bold bg-transparent outline-none focus:bg-surface-2 rounded-sm px-1 -ml-1 w-full" />
             <input value={session.artist}
               onChange={(e) => update(session.id, { artist: e.target.value })}
-              className="block text-sm text-muted-foreground bg-transparent outline-none focus:bg-surface-2 rounded-sm px-1 -ml-1 mt-1" />
+              className="block text-base md:text-sm text-muted-foreground bg-transparent outline-none focus:bg-surface-2 rounded-sm px-1 -ml-1 mt-1 w-full" />
           </div>
           <div className="w-full sm:w-auto sm:min-w-[240px]">
             <SessionTimer />
