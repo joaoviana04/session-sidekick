@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Mic, Sliders } from "lucide-react";
+import { ArrowLeft, Mic, Sliders, Zap } from "lucide-react";
 import { AppShell } from "@/components/console/AppShell";
 import { useSessions } from "@/lib/store/sessions";
 import { SessionTimer } from "@/components/console/SessionTimer";
@@ -11,6 +11,9 @@ import { MixChecklist } from "@/components/console/MixChecklist";
 import { References } from "@/components/console/References";
 import { Revisions } from "@/components/console/Revisions";
 import { TapTempo } from "@/components/console/TapTempo";
+import { MonitorMixes } from "@/components/console/MonitorMixes";
+import { Setlist } from "@/components/console/Setlist";
+import { ShowLog } from "@/components/console/ShowLog";
 
 const SessionView = () => {
   const { id } = useParams<{ id: string }>();
@@ -30,8 +33,11 @@ const SessionView = () => {
     );
   }
 
-  const Icon = session.type === "recording" ? Mic : Sliders;
-  const accent = session.type === "recording" ? "text-info" : "text-primary";
+  const Icon = session.type === "recording" ? Mic : session.type === "mix" ? Sliders : Zap;
+  const accent =
+    session.type === "recording" ? "text-info" : session.type === "mix" ? "text-primary" : "text-success";
+  const typeLabel =
+    session.type === "recording" ? "tracking session" : session.type === "mix" ? "mix session" : "live session";
 
   return (
     <AppShell>
@@ -45,7 +51,7 @@ const SessionView = () => {
             <Icon className="h-5 w-5" />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="label-mono">{session.type === "recording" ? "tracking session" : "mix session"}</div>
+            <div className="label-mono">{typeLabel}</div>
             <input value={session.title}
               onChange={(e) => update(session.id, { title: e.target.value })}
               className="font-display text-2xl md:text-3xl font-bold bg-transparent outline-none focus:bg-surface-2 rounded-sm px-1 -ml-1 w-full" />
@@ -73,7 +79,7 @@ const SessionView = () => {
               <TapTempo />
             </div>
           </div>
-        ) : (
+        ) : session.type === "mix" ? (
           <div className="grid lg:grid-cols-3 gap-6">
             <div className="space-y-6">
               <MixChecklist session={session} />
@@ -83,6 +89,20 @@ const SessionView = () => {
               <Revisions session={session} />
               <References session={session} />
               <Notes session={session} />
+            </div>
+          </div>
+        ) : (
+          <div className="grid lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-6">
+              <InputList session={session} />
+              <Setlist session={session} />
+              <ShowLog session={session} />
+            </div>
+            <div className="space-y-6">
+              <MixChecklist session={session} />
+              <MonitorMixes session={session} />
+              <Notes session={session} />
+              <TapTempo />
             </div>
           </div>
         )}
