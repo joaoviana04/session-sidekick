@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Mic, Sliders } from "lucide-react";
+import { Mic, Sliders, Radio } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -48,10 +48,11 @@ export function NewSessionDialog({
         </DialogHeader>
 
         <form onSubmit={submit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {([
               { v: "recording", label: "Recording", desc: "Inputs - Takes - Notes", icon: Mic, color: "text-info" },
               { v: "mix", label: "Mix", desc: "Checklist - Refs - Revisions", icon: Sliders, color: "text-primary" },
+              { v: "live", label: "Live", desc: "Patch - Monitors - Setlist", icon: Radio, color: "text-success" },
             ] as const).map((o) => (
               <button type="button" key={o.v} onClick={() => setType(o.v)}
                 className={cn(
@@ -68,11 +69,15 @@ export function NewSessionDialog({
           <div className="space-y-2">
             <Label htmlFor="title" className="label-mono">Title</Label>
             <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)}
-              placeholder={type === "recording" ? "e.g. Drums tracking - Song A" : "e.g. Single - Mix v3"}
+              placeholder={
+                type === "recording" ? "e.g. Drums tracking - Song A"
+                : type === "mix" ? "e.g. Single - Mix v3"
+                : "e.g. Tour - Lisbon - Coliseu"
+              }
               className="bg-input border-border" autoFocus required />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="artist" className="label-mono">Artist / Client</Label>
+            <Label htmlFor="artist" className="label-mono">{type === "live" ? "Artist / Band" : "Artist / Client"}</Label>
             <Input id="artist" value={artist} onChange={(e) => setArtist(e.target.value)}
               placeholder="e.g. The Band" className="bg-input border-border" />
           </div>
