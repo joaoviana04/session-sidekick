@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Mic, Sliders, Trash2, ArrowUpRight, Plus } from "lucide-react";
+import { Mic, Sliders, Trash2, ArrowUpRight, Plus, Zap } from "lucide-react";
 import { AppShell } from "@/components/console/AppShell";
 import { NewSessionDialog } from "@/components/console/NewSessionDialog";
 import { useSessions } from "@/lib/store/sessions";
@@ -12,6 +12,7 @@ const Index = () => {
 
   const recCount = sessions.filter((s) => s.type === "recording").length;
   const mixCount = sessions.filter((s) => s.type === "mix").length;
+  const liveCount = sessions.filter((s) => s.type === "live").length;
 
   return (
     <AppShell>
@@ -33,6 +34,7 @@ const Index = () => {
             <div className="flex items-center gap-4 ml-2">
               <Stat label="Recording" value={recCount} icon={<Mic className="h-3.5 w-3.5 text-info" />} />
               <Stat label="Mix" value={mixCount} icon={<Sliders className="h-3.5 w-3.5 text-primary" />} />
+              <Stat label="Live" value={liveCount} icon={<Zap className="h-3.5 w-3.5 text-success" />} />
               <Stat label="Total" value={sessions.length} />
             </div>
           </div>
@@ -43,11 +45,14 @@ const Index = () => {
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {sessions.map((s) => {
-              const Icon = s.type === "recording" ? Mic : Sliders;
-              const accent = s.type === "recording" ? "text-info" : "text-primary";
-              const counts = s.type === "recording"
-                ? `${s.inputs?.length ?? 0} inputs · ${s.takes?.length ?? 0} takes`
-                : `${s.checklist?.filter((c) => c.done).length ?? 0}/${s.checklist?.length ?? 0} checks · ${s.revisions?.length ?? 0} revs`;
+              const Icon = s.type === "recording" ? Mic : s.type === "mix" ? Sliders : Zap;
+              const accent = s.type === "recording" ? "text-info" : s.type === "mix" ? "text-primary" : "text-success";
+              const counts =
+                s.type === "recording"
+                  ? `${s.inputs?.length ?? 0} inputs · ${s.takes?.length ?? 0} takes`
+                  : s.type === "mix"
+                  ? `${s.checklist?.filter((c) => c.done).length ?? 0}/${s.checklist?.length ?? 0} checks · ${s.revisions?.length ?? 0} revs`
+                  : `${s.inputs?.length ?? 0} ch · ${s.setlist?.length ?? 0} songs · ${s.monitorMixes?.length ?? 0} mixes`;
 
               return (
                 <div key={s.id} className="panel p-4 group hover:border-primary/40 transition-all relative animate-fade-in">
