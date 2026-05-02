@@ -26,7 +26,9 @@ export function MixChecklist({ session }: { session: Session }) {
       <div className="px-4 py-3 border-b border-border">
         <div className="flex items-center justify-between">
           <div>
-            <div className="font-display font-semibold">Mix Checklist</div>
+            <div className="font-display font-semibold">
+              {session.type === "live" ? "Soundcheck Checklist" : "Mix Checklist"}
+            </div>
             <div className="label-mono mt-0.5">{done}/{items.length} complete</div>
           </div>
           <div className="font-mono text-2xl text-primary tabular-nums">{pct}%</div>
