@@ -277,7 +277,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      session_type: "recording" | "mix"
+      session_type: "recording" | "mix" | "live"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -405,7 +405,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      session_type: ["recording", "mix"],
+      session_type: ["recording", "mix", "live"],
     },
   },
 } as const
