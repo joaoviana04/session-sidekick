@@ -15,6 +15,8 @@ import type {
   Project,
   Client,
   ChecklistItem,
+  MonitorMix,
+  SetlistSong,
 } from "@/lib/types";
 
 const uid = () => Math.random().toString(36).slice(2, 10);
@@ -51,6 +53,48 @@ const defaultMixChecklist = (): ChecklistItem[] => {
   );
 };
 
+const defaultLiveChecklist = (): ChecklistItem[] => {
+  const groups: Record<string, string[]> = {
+    "Pre-show": [
+      "Power & ground confirmed",
+      "Stage box / snake patched",
+      "Console scenes loaded",
+      "RF scan done & frequencies coordinated",
+      "Spare batteries charged",
+    ],
+    "Line check": [
+      "Every input verified at console",
+      "Phantom power on condensers / DI",
+      "Polarity / phase on multi-mic sources",
+      "Talkback to stage working",
+    ],
+    "Soundcheck": [
+      "Drums & bass groove",
+      "All instruments individual check",
+      "Vocals & harmonies",
+      "Monitor mixes confirmed by each performer",
+      "FOH ringing / system tuning",
+      "Full song run-through",
+    ],
+    "Doors": [
+      "Show file saved",
+      "Recording armed (multitrack / 2-track)",
+      "Walkie / comms with crew",
+      "House music ready",
+    ],
+  };
+  return Object.entries(groups).flatMap(([group, items]) =>
+    items.map((label) => ({ id: uid(), label, done: false, group }))
+  );
+};
+
+const defaultMonitorMixes = (): MonitorMix[] => [
+  { id: uid(), mixNumber: "1", performer: "Lead vocals", type: "iem", contents: "", notes: "" },
+  { id: uid(), mixNumber: "2", performer: "Drums", type: "iem", contents: "", notes: "" },
+  { id: uid(), mixNumber: "3", performer: "Bass", type: "wedge", contents: "", notes: "" },
+  { id: uid(), mixNumber: "4", performer: "Guitar", type: "wedge", contents: "", notes: "" },
+];
+
 function sessionFromRow(row: any): Session {
   return {
     id: row.id,
@@ -70,6 +114,15 @@ function sessionFromRow(row: any): Session {
     revisions: row.revisions ?? [],
     createdAt: row.created_at,
     projectId: row.project_id ?? null,
+    venue: row.venue ?? "",
+    paSystem: row.pa_system ?? "",
+    fohConsole: row.foh_console ?? "",
+    monitorConsole: row.monitor_console ?? "",
+    showDate: row.show_date ?? "",
+    monitorNotes: row.monitor_notes ?? "",
+    monitorMixes: row.monitor_mixes ?? [],
+    setlist: row.setlist ?? [],
+    showLog: row.show_log ?? [],
   };
 }
 
@@ -89,6 +142,15 @@ function sessionToRowPatch(patch: Partial<Session>): Record<string, any> {
   if ("references" in patch) p.references = patch.references;
   if ("revisions" in patch) p.revisions = patch.revisions;
   if ("projectId" in patch) p.project_id = patch.projectId;
+  if ("venue" in patch) p.venue = patch.venue;
+  if ("paSystem" in patch) p.pa_system = patch.paSystem;
+  if ("fohConsole" in patch) p.foh_console = patch.fohConsole;
+  if ("monitorConsole" in patch) p.monitor_console = patch.monitorConsole;
+  if ("showDate" in patch) p.show_date = patch.showDate;
+  if ("monitorNotes" in patch) p.monitor_notes = patch.monitorNotes;
+  if ("monitorMixes" in patch) p.monitor_mixes = patch.monitorMixes;
+  if ("setlist" in patch) p.setlist = patch.setlist;
+  if ("showLog" in patch) p.show_log = patch.showLog;
   return p;
 }
 
@@ -243,10 +305,29 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
           notes: "",
         }));
         base.takes = [];
-      } else {
+      } else if (type === "mix") {
         base.checklist = defaultMixChecklist();
         base.lufs_target = "-14 LUFS";
         base.true_peak_target = "-1 dBTP";
+      } else if (type === "live") {
+        base.inputs = Array.from({ length: 16 }, (_, i) => ({
+          id: uid(),
+          ch: i + 1,
+          source: "",
+          mic: "",
+          preamp: "",
+          phantom: false,
+          pad: false,
+          hpf: false,
+          notes: "",
+          stand: "",
+          stageBox: "",
+        }));
+        base.checklist = defaultLiveChecklist();
+        base.monitor_mixes = defaultMonitorMixes();
+        base.setlist = [];
+        base.show_log = [];
+        base.sample_rate = "48 kHz / 24-bit";
       }
       const { data, error } = await supabase
         .from("sessions")
