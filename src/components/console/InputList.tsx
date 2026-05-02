@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 export function InputList({ session }: { session: Session }) {
   const { update } = useSession(session.id);
   const inputs = session.inputs ?? [];
+  const isLive = session.type === "live";
 
   const setInputs = (fn: (i: typeof inputs) => typeof inputs) =>
     update(session.id, (s) => ({ ...s, inputs: fn(s.inputs ?? []) }));
@@ -13,14 +14,14 @@ export function InputList({ session }: { session: Session }) {
   const toggle = (id: string, flag: "phantom" | "pad" | "hpf") =>
     setInputs((arr) => arr.map((r) => (r.id === id ? { ...r, [flag]: !r[flag] } : r)));
 
-  const setField = (id: string, field: "source" | "mic" | "preamp" | "notes", value: string) =>
+  const setField = (id: string, field: "source" | "mic" | "preamp" | "notes" | "stand" | "stageBox", value: string) =>
     setInputs((arr) => arr.map((r) => (r.id === id ? { ...r, [field]: value } : r)));
 
   return (
     <div className="panel overflow-hidden">
       <div className="flex items-center justify-between px-4 py-3 border-b border-border">
         <div>
-          <div className="font-display font-semibold">Input List</div>
+          <div className="font-display font-semibold">{isLive ? "Patch List" : "Input List"}</div>
           <div className="label-mono mt-0.5">{inputs.length} channels</div>
         </div>
         <button onClick={() => setInputs((arr) => [...arr, helpers.newInput(arr.length + 1)])}
@@ -38,6 +39,8 @@ export function InputList({ session }: { session: Session }) {
               <th className="px-3 py-2">Source</th>
               <th className="px-3 py-2">Mic</th>
               <th className="px-3 py-2">Preamp</th>
+              {isLive && <th className="px-3 py-2">Stage box</th>}
+              {isLive && <th className="px-3 py-2">Stand</th>}
               <th className="px-3 py-2 text-center">+48</th>
               <th className="px-3 py-2 text-center">Pad</th>
               <th className="px-3 py-2 text-center">HPF</th>
@@ -56,6 +59,20 @@ export function InputList({ session }: { session: Session }) {
                       placeholder="—" />
                   </td>
                 ))}
+                {isLive && (
+                  <td className="px-2 py-1">
+                    <input value={row.stageBox ?? ""} onChange={(e) => setField(row.id, "stageBox", e.target.value)}
+                      className="w-full bg-transparent px-2 py-1 rounded-sm hover:bg-surface-2 focus:bg-surface-2 outline-none focus:ring-1 focus:ring-primary text-sm"
+                      placeholder="SB1/01" />
+                  </td>
+                )}
+                {isLive && (
+                  <td className="px-2 py-1">
+                    <input value={row.stand ?? ""} onChange={(e) => setField(row.id, "stand", e.target.value)}
+                      className="w-full bg-transparent px-2 py-1 rounded-sm hover:bg-surface-2 focus:bg-surface-2 outline-none focus:ring-1 focus:ring-primary text-sm"
+                      placeholder="Boom S" />
+                  </td>
+                )}
                 {(["phantom", "pad", "hpf"] as const).map((flag) => (
                   <td key={flag} className="px-2 py-1 text-center">
                     <button onClick={() => toggle(row.id, flag)}
@@ -84,7 +101,7 @@ export function InputList({ session }: { session: Session }) {
               </tr>
             ))}
             {inputs.length === 0 && (
-              <tr><td colSpan={9} className="px-4 py-8 text-center text-muted-foreground text-sm">No channels yet.</td></tr>
+              <tr><td colSpan={isLive ? 11 : 9} className="px-4 py-8 text-center text-muted-foreground text-sm">No channels yet.</td></tr>
             )}
           </tbody>
         </table>
@@ -132,6 +149,28 @@ export function InputList({ session }: { session: Session }) {
                   className="w-full bg-input border border-border rounded-sm px-2 py-1.5 text-sm outline-none focus:ring-1 focus:ring-primary"
                 />
               </label>
+              {isLive && (
+                <label className="block">
+                  <div className="label-mono mb-1">Stage box</div>
+                  <input
+                    value={row.stageBox ?? ""}
+                    onChange={(e) => setField(row.id, "stageBox", e.target.value)}
+                    placeholder="SB1/01"
+                    className="w-full bg-input border border-border rounded-sm px-2 py-1.5 text-sm outline-none focus:ring-1 focus:ring-primary"
+                  />
+                </label>
+              )}
+              {isLive && (
+                <label className="block">
+                  <div className="label-mono mb-1">Stand</div>
+                  <input
+                    value={row.stand ?? ""}
+                    onChange={(e) => setField(row.id, "stand", e.target.value)}
+                    placeholder="Boom"
+                    className="w-full bg-input border border-border rounded-sm px-2 py-1.5 text-sm outline-none focus:ring-1 focus:ring-primary"
+                  />
+                </label>
+              )}
             </div>
 
             <div className="flex items-center gap-2 pl-10 flex-wrap">
