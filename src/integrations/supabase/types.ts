@@ -201,63 +201,90 @@ export type Database = {
           bpm: string | null
           checklist: Json
           created_at: string
+          foh_console: string | null
           id: string
           inputs: Json
           key: string | null
           lufs_target: string | null
+          monitor_console: string | null
+          monitor_mixes: Json
+          monitor_notes: string | null
           notes: string | null
+          pa_system: string | null
           project_id: string | null
           references: Json
           revisions: Json
           sample_rate: string | null
+          setlist: Json
+          show_date: string | null
+          show_log: Json
           takes: Json
           title: string
           true_peak_target: string | null
           type: Database["public"]["Enums"]["session_type"]
           updated_at: string
           user_id: string
+          venue: string | null
         }
         Insert: {
           artist?: string | null
           bpm?: string | null
           checklist?: Json
           created_at?: string
+          foh_console?: string | null
           id?: string
           inputs?: Json
           key?: string | null
           lufs_target?: string | null
+          monitor_console?: string | null
+          monitor_mixes?: Json
+          monitor_notes?: string | null
           notes?: string | null
+          pa_system?: string | null
           project_id?: string | null
           references?: Json
           revisions?: Json
           sample_rate?: string | null
+          setlist?: Json
+          show_date?: string | null
+          show_log?: Json
           takes?: Json
           title: string
           true_peak_target?: string | null
           type: Database["public"]["Enums"]["session_type"]
           updated_at?: string
           user_id: string
+          venue?: string | null
         }
         Update: {
           artist?: string | null
           bpm?: string | null
           checklist?: Json
           created_at?: string
+          foh_console?: string | null
           id?: string
           inputs?: Json
           key?: string | null
           lufs_target?: string | null
+          monitor_console?: string | null
+          monitor_mixes?: Json
+          monitor_notes?: string | null
           notes?: string | null
+          pa_system?: string | null
           project_id?: string | null
           references?: Json
           revisions?: Json
           sample_rate?: string | null
+          setlist?: Json
+          show_date?: string | null
+          show_log?: Json
           takes?: Json
           title?: string
           true_peak_target?: string | null
           type?: Database["public"]["Enums"]["session_type"]
           updated_at?: string
           user_id?: string
+          venue?: string | null
         }
         Relationships: [
           {
