@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
-import { CheckCircle2, RefreshCw, Loader2, Mic, Sliders } from "lucide-react";
+import { CheckCircle2, RefreshCw, Loader2, Mic, Sliders, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -122,7 +122,7 @@ const Share = () => {
   }
 
   const { session, feedback } = data;
-  const Icon = session.type === "recording" ? Mic : Sliders;
+  const Icon = session.type === "recording" ? Mic : session.type === "mix" ? Sliders : Zap;
   const fbByRev = new Map(feedback.map((f) => [f.revision_id, f]));
 
   return (
@@ -141,7 +141,9 @@ const Share = () => {
             <Icon className="h-5 w-5" />
           </div>
           <div>
-            <div className="label-mono">{session.type === "recording" ? "tracking" : "mix"}</div>
+            <div className="label-mono">
+              {session.type === "recording" ? "tracking" : session.type === "mix" ? "mix" : "live"}
+            </div>
             <h1 className="font-display text-2xl font-bold">{session.title}</h1>
             {session.artist && (
               <div className="text-sm text-muted-foreground">{session.artist}</div>
