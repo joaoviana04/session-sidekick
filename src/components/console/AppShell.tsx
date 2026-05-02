@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Mic, Sliders, Wrench, Radio, Plus, FolderKanban, Users, LogOut, Menu, X } from "lucide-react";
+import { Mic, Sliders, Wrench, Radio, Plus, FolderKanban, Users, LogOut, Menu, X, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSessions } from "@/lib/store/sessions";
 import { NewSessionDialog } from "./NewSessionDialog";
@@ -71,7 +71,8 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="label-mono px-2 mb-2">Recent</div>
           <div className="space-y-1 max-h-[40vh] overflow-auto pr-1">
             {sessions.slice(0, 12).map((s) => {
-              const Icon = s.type === "recording" ? Mic : Sliders;
+              const Icon = s.type === "recording" ? Mic : s.type === "mix" ? Sliders : Zap;
+              const accent = s.type === "recording" ? "text-info" : s.type === "mix" ? "text-primary" : "text-success";
               const active = location.pathname === `/session/${s.id}`;
               return (
                 <Link key={s.id} to={`/session/${s.id}`}
@@ -79,7 +80,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                     "flex items-center gap-2 px-2 py-1.5 rounded-sm text-xs group",
                     active ? "bg-surface-2 text-foreground" : "text-muted-foreground hover:bg-surface-2 hover:text-foreground"
                   )}>
-                  <Icon className={cn("h-3.5 w-3.5 shrink-0", s.type === "recording" ? "text-info" : "text-primary")} />
+                  <Icon className={cn("h-3.5 w-3.5 shrink-0", accent)} />
                   <span className="truncate flex-1">{s.title}</span>
                 </Link>
               );
@@ -188,7 +189,8 @@ export function AppShell({ children }: { children: ReactNode }) {
               <div className="label-mono px-2 mb-2">Recent</div>
               <div className="space-y-1 overflow-auto pr-1 flex-1">
                 {sessions.slice(0, 20).map((s) => {
-                  const Icon = s.type === "recording" ? Mic : Sliders;
+                  const Icon = s.type === "recording" ? Mic : s.type === "mix" ? Sliders : Zap;
+                  const accent = s.type === "recording" ? "text-info" : s.type === "mix" ? "text-primary" : "text-success";
                   const active = location.pathname === `/session/${s.id}`;
                   return (
                     <Link
@@ -199,7 +201,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                         active ? "bg-surface-2 text-foreground" : "text-muted-foreground hover:bg-surface-2 hover:text-foreground",
                       )}
                     >
-                      <Icon className={cn("h-3.5 w-3.5 shrink-0", s.type === "recording" ? "text-info" : "text-primary")} />
+                      <Icon className={cn("h-3.5 w-3.5 shrink-0", accent)} />
                       <span className="truncate flex-1">{s.title}</span>
                     </Link>
                   );
