@@ -1,17 +1,34 @@
-import { Plus, Check, Trash2 } from "lucide-react";
+import { Plus, Check, Trash2, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useSession, helpers } from "@/lib/store/sessions";
 import type { Session } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { mixPresets, livePresets } from "@/lib/presets";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function MixChecklist({ session }: { session: Session }) {
   const { update } = useSession(session.id);
   const items = session.checklist ?? [];
   const [adding, setAdding] = useState<string | null>(null);
   const [text, setText] = useState("");
+  const presets = session.type === "live" ? livePresets : mixPresets;
 
   const setItems = (fn: (i: typeof items) => typeof items) =>
     update(session.id, (s) => ({ ...s, checklist: fn(s.checklist ?? []) }));
+
+  const applyPreset = (presetId: string, mode: "replace" | "append") => {
+    const p = presets.find((x) => x.id === presetId);
+    if (!p) return;
+    const next = p.build();
+    setItems((arr) => (mode === "replace" ? next : [...arr, ...next]));
+  };
 
   const grouped = items.reduce<Record<string, typeof items>>((acc, i) => {
     (acc[i.group] ||= []).push(i);
@@ -31,7 +48,32 @@ export function MixChecklist({ session }: { session: Session }) {
             </div>
             <div className="label-mono mt-0.5">{done}/{items.length} complete</div>
           </div>
-          <div className="font-mono text-2xl text-primary tabular-nums">{pct}%</div>
+          <div className="flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-sm bg-surface-2 hover:bg-surface-3 transition">
+                <Sparkles className="h-3.5 w-3.5" /> Presets
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-64">
+                <DropdownMenuLabel>Replace with preset</DropdownMenuLabel>
+                {presets.map((p) => (
+                  <DropdownMenuItem key={p.id} onClick={() => applyPreset(p.id, "replace")}>
+                    <div>
+                      <div className="text-sm">{p.label}</div>
+                      <div className="text-xs text-muted-foreground">{p.description}</div>
+                    </div>
+                  </DropdownMenuItem>
+                ))}
+                <DropdownMenuSeparator />
+                <DropdownMenuLabel>Append preset</DropdownMenuLabel>
+                {presets.map((p) => (
+                  <DropdownMenuItem key={`a-${p.id}`} onClick={() => applyPreset(p.id, "append")}>
+                    <div className="text-sm">+ {p.label}</div>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <div className="font-mono text-2xl text-primary tabular-nums">{pct}%</div>
+          </div>
         </div>
         <div className="mt-3 h-1 bg-surface-3 rounded-full overflow-hidden">
           <div className="h-full bg-gradient-amber transition-all" style={{ width: `${pct}%` }} />
@@ -39,6 +81,23 @@ export function MixChecklist({ session }: { session: Session }) {
       </div>
 
       <div className="p-3 space-y-4 max-h-[600px] overflow-auto">
+        {items.length === 0 && (
+          <div className="px-2 py-6 text-center space-y-3">
+            <div className="text-sm text-muted-foreground">No checklist yet — start from a preset:</div>
+            <div className="flex flex-wrap gap-2 justify-center">
+              {presets.map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => applyPreset(p.id, "replace")}
+                  className="text-xs px-3 py-1.5 rounded-sm border border-border bg-surface-2 hover:bg-surface-3 transition text-left"
+                >
+                  <div className="font-medium">{p.label}</div>
+                  <div className="label-mono mt-0.5">{p.description}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
         {Object.entries(grouped).map(([group, list]) => (
           <div key={group}>
             <div className="flex items-center justify-between mb-2 px-1">
