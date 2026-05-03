@@ -154,6 +154,45 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const sessionsRef = useRef<Session[]>([]);
   sessionsRef.current = sessions;
 
+  // Debounced session writes — coalesce per-session field changes
+  const pendingPatches = useRef<Map<string, Record<string, any>>>(new Map());
+  const flushTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
+
+  const flushSession = useCallback(async (id: string) => {
+    const row = pendingPatches.current.get(id);
+    if (!row || Object.keys(row).length === 0) return;
+    pendingPatches.current.delete(id);
+    const t = flushTimers.current.get(id);
+    if (t) {
+      clearTimeout(t);
+      flushTimers.current.delete(id);
+    }
+    const { error } = await supabase
+      .from("sessions")
+      .update(row as any)
+      .eq("id", id);
+    if (error) {
+      console.error(error);
+      refetchAll();
+    }
+  }, []);
+
+  // Flush all pending writes when the page is hidden / unloaded
+  useEffect(() => {
+    const flushAll = () => {
+      for (const id of Array.from(pendingPatches.current.keys())) {
+        flushSession(id);
+      }
+    };
+    window.addEventListener("beforeunload", flushAll);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") flushAll();
+    });
+    return () => {
+      window.removeEventListener("beforeunload", flushAll);
+    };
+  }, [flushSession]);
+
   const refetchAll = useCallback(async () => {
     if (!user) {
       setSessions([]);
@@ -290,20 +329,31 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         row = patch;
         setSessions((arr) => arr.map((s) => (s.id === id ? { ...s, ...patch } : s)));
       }
-      const { error } = await supabase
-        .from("sessions")
-        .update(sessionToRowPatch(row) as any)
-        .eq("id", id);
-      if (error) {
-        console.error(error);
-        refetchAll();
-      }
+      // Coalesce pending changes; debounce the actual network write
+      const merged = {
+        ...(pendingPatches.current.get(id) ?? {}),
+        ...sessionToRowPatch(row),
+      };
+      pendingPatches.current.set(id, merged);
+      const existing = flushTimers.current.get(id);
+      if (existing) clearTimeout(existing);
+      flushTimers.current.set(
+        id,
+        setTimeout(() => flushSession(id), 600),
+      );
     },
-    [user, refetchAll],
+    [user, flushSession],
   );
 
   const removeSession = useCallback(
     async (id: string) => {
+      // Drop any pending writes for this session
+      pendingPatches.current.delete(id);
+      const t = flushTimers.current.get(id);
+      if (t) {
+        clearTimeout(t);
+        flushTimers.current.delete(id);
+      }
       setSessions((arr) => arr.filter((s) => s.id !== id));
       const { error } = await supabase.from("sessions").delete().eq("id", id);
       if (error) {
