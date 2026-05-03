@@ -26,12 +26,12 @@ const Index = () => {
             A tactile companion for the control room. Track inputs and takes while recording, run a checklist and revisions while mixing.
           </p>
 
-          <div className="mt-6 flex flex-wrap items-center gap-3">
+          <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
             <button onClick={() => setOpen(true)}
               className="flex items-center gap-2 rounded-sm bg-gradient-amber text-primary-foreground px-4 py-2.5 text-sm font-semibold hover:opacity-90 transition shadow-led">
               <Plus className="h-4 w-4" /> New session
             </button>
-            <div className="flex items-center gap-4 ml-2">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
               <Stat label="Recording" value={recCount} icon={<Mic className="h-3.5 w-3.5 text-info" />} />
               <Stat label="Mix" value={mixCount} icon={<Sliders className="h-3.5 w-3.5 text-primary" />} />
               <Stat label="Live" value={liveCount} icon={<Zap className="h-3.5 w-3.5 text-success" />} />
