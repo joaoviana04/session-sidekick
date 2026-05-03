@@ -306,7 +306,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         }));
         base.takes = [];
       } else if (type === "mix") {
-        base.checklist = defaultMixChecklist();
+        base.checklist = [];
         base.lufs_target = "-14 LUFS";
         base.true_peak_target = "-1 dBTP";
       } else if (type === "live") {
@@ -323,7 +323,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
           stand: "",
           stageBox: "",
         }));
-        base.checklist = defaultLiveChecklist();
+        base.checklist = [];
         base.monitor_mixes = defaultMonitorMixes();
         base.setlist = [];
         base.show_log = [];
