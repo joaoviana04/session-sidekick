@@ -14,79 +14,10 @@ import type {
   SessionType,
   Project,
   Client,
-  ChecklistItem,
   MonitorMix,
-  SetlistSong,
 } from "@/lib/types";
 
 const uid = () => Math.random().toString(36).slice(2, 10);
-
-const defaultMixChecklist = (): ChecklistItem[] => {
-  const groups: Record<string, string[]> = {
-    "Pre-flight": [
-      "Sample rate / bit depth confirmed",
-      "Session backed up",
-      "Color-coded & labeled tracks",
-      "Reference tracks imported & gain-matched",
-    ],
-    "Balance": [
-      "Static mix done (faders only)",
-      "Phase / polarity check on multi-mic sources",
-      "Mono compatibility check",
-      "Low-end check on subs / headphones / car",
-    ],
-    "Bus & Master": [
-      "Mix bus chain dialed",
-      "True peak below target",
-      "LUFS hits target",
-      "Headroom for mastering (-6 dBFS)",
-    ],
-    "Delivery": [
-      "Print stems",
-      "Print instrumental + TV mix",
-      "Export 24-bit WAV @ session SR",
-      "Notes & revision archived",
-    ],
-  };
-  return Object.entries(groups).flatMap(([group, items]) =>
-    items.map((label) => ({ id: uid(), label, done: false, group }))
-  );
-};
-
-const defaultLiveChecklist = (): ChecklistItem[] => {
-  const groups: Record<string, string[]> = {
-    "Pre-show": [
-      "Power & ground confirmed",
-      "Stage box / snake patched",
-      "Console scenes loaded",
-      "RF scan done & frequencies coordinated",
-      "Spare batteries charged",
-    ],
-    "Line check": [
-      "Every input verified at console",
-      "Phantom power on condensers / DI",
-      "Polarity / phase on multi-mic sources",
-      "Talkback to stage working",
-    ],
-    "Soundcheck": [
-      "Drums & bass groove",
-      "All instruments individual check",
-      "Vocals & harmonies",
-      "Monitor mixes confirmed by each performer",
-      "FOH ringing / system tuning",
-      "Full song run-through",
-    ],
-    "Doors": [
-      "Show file saved",
-      "Recording armed (multitrack / 2-track)",
-      "Walkie / comms with crew",
-      "House music ready",
-    ],
-  };
-  return Object.entries(groups).flatMap(([group, items]) =>
-    items.map((label) => ({ id: uid(), label, done: false, group }))
-  );
-};
 
 const defaultMonitorMixes = (): MonitorMix[] => [
   { id: uid(), mixNumber: "1", performer: "Lead vocals", type: "iem", contents: "", notes: "" },
@@ -306,7 +237,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         }));
         base.takes = [];
       } else if (type === "mix") {
-        base.checklist = defaultMixChecklist();
+        base.checklist = [];
         base.lufs_target = "-14 LUFS";
         base.true_peak_target = "-1 dBTP";
       } else if (type === "live") {
@@ -323,7 +254,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
           stand: "",
           stageBox: "",
         }));
-        base.checklist = defaultLiveChecklist();
+        base.checklist = [];
         base.monitor_mixes = defaultMonitorMixes();
         base.setlist = [];
         base.show_log = [];

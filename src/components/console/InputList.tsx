@@ -1,15 +1,35 @@
 import { Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { useSession, helpers } from "@/lib/store/sessions";
 import type { Session } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 export function InputList({ session }: { session: Session }) {
   const { update } = useSession(session.id);
   const inputs = session.inputs ?? [];
   const isLive = session.type === "live";
+  const [customCount, setCustomCount] = useState("");
+  const [popOpen, setPopOpen] = useState(false);
 
   const setInputs = (fn: (i: typeof inputs) => typeof inputs) =>
     update(session.id, (s) => ({ ...s, inputs: fn(s.inputs ?? []) }));
+
+  const addMany = (n: number) => {
+    if (!Number.isFinite(n) || n < 1) return;
+    const count = Math.min(Math.floor(n), 128);
+    setInputs((arr) => {
+      const start = arr.length;
+      const added = Array.from({ length: count }, (_, i) => helpers.newInput(start + i + 1));
+      return [...arr, ...added];
+    });
+    setCustomCount("");
+    setPopOpen(false);
+  };
 
   const toggle = (id: string, flag: "phantom" | "pad" | "hpf") =>
     setInputs((arr) => arr.map((r) => (r.id === id ? { ...r, [flag]: !r[flag] } : r)));
@@ -24,10 +44,49 @@ export function InputList({ session }: { session: Session }) {
           <div className="font-display font-semibold">{isLive ? "Patch List" : "Input List"}</div>
           <div className="label-mono mt-0.5">{inputs.length} channels</div>
         </div>
-        <button onClick={() => setInputs((arr) => [...arr, helpers.newInput(arr.length + 1)])}
-          className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-sm bg-surface-2 hover:bg-surface-3 transition">
-          <Plus className="h-3.5 w-3.5" /> Channel
-        </button>
+        <Popover open={popOpen} onOpenChange={setPopOpen}>
+          <PopoverTrigger className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-sm bg-surface-2 hover:bg-surface-3 transition">
+            <Plus className="h-3.5 w-3.5" /> Add channels
+          </PopoverTrigger>
+          <PopoverContent align="end" className="w-56 p-3 space-y-2">
+            <div className="label-mono">Add how many?</div>
+            <div className="grid grid-cols-4 gap-1.5">
+              {[1, 4, 8, 16, 24, 32, 48, 64].map((n) => (
+                <button
+                  key={n}
+                  onClick={() => addMany(n)}
+                  className="text-xs py-1.5 rounded-sm bg-surface-2 hover:bg-primary hover:text-primary-foreground transition font-mono"
+                >
+                  {n}
+                </button>
+              ))}
+            </div>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const n = parseInt(customCount, 10);
+                if (n > 0) addMany(n);
+              }}
+              className="flex items-center gap-1.5 pt-1"
+            >
+              <input
+                type="number"
+                min={1}
+                max={128}
+                value={customCount}
+                onChange={(e) => setCustomCount(e.target.value)}
+                placeholder="Custom"
+                className="flex-1 min-w-0 bg-input border border-border rounded-sm px-2 py-1.5 text-xs outline-none focus:ring-1 focus:ring-primary"
+              />
+              <button
+                type="submit"
+                className="text-xs px-2.5 py-1.5 rounded-sm bg-primary text-primary-foreground hover:opacity-90"
+              >
+                Add
+              </button>
+            </form>
+          </PopoverContent>
+        </Popover>
       </div>
 
       {/* Desktop / wide: classic table */}
