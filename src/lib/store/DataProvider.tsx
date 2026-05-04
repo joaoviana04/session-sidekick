@@ -157,6 +157,21 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   // Debounced session writes — coalesce per-session field changes
   const pendingPatches = useRef<Map<string, Record<string, any>>>(new Map());
   const flushTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
+  // Tracks ids we wrote ourselves so we can ignore the realtime echo
+  const localWriteIds = useRef<Map<string, number>>(new Map());
+  const markLocalWrite = (id: string) => {
+    // suppress realtime refetch for ~1.5s after our own write
+    localWriteIds.current.set(id, Date.now() + 1500);
+  };
+  const isLocalEcho = (id: string) => {
+    const until = localWriteIds.current.get(id);
+    if (!until) return false;
+    if (Date.now() > until) {
+      localWriteIds.current.delete(id);
+      return false;
+    }
+    return true;
+  };
 
   const flushSession = useCallback(async (id: string) => {
     const row = pendingPatches.current.get(id);
@@ -167,6 +182,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
       clearTimeout(t);
       flushTimers.current.delete(id);
     }
+    markLocalWrite(id);
     const { error } = await supabase
       .from("sessions")
       .update(row as any)
@@ -184,12 +200,14 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         flushSession(id);
       }
     };
-    window.addEventListener("beforeunload", flushAll);
-    document.addEventListener("visibilitychange", () => {
+    const onVisibility = () => {
       if (document.visibilityState === "hidden") flushAll();
-    });
+    };
+    window.addEventListener("beforeunload", flushAll);
+    document.addEventListener("visibilitychange", onVisibility);
     return () => {
       window.removeEventListener("beforeunload", flushAll);
+      document.removeEventListener("visibilitychange", onVisibility);
     };
   }, [flushSession]);
 
