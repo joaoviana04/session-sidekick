@@ -240,22 +240,28 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   // Realtime — one channel for all three tables, scoped to user
   useEffect(() => {
     if (!user) return;
+    const handle = (table: "sessions" | "projects" | "clients") => (payload: any) => {
+      const row: any = payload.new ?? payload.old;
+      const id: string | undefined = row?.id;
+      if (id && isLocalEcho(id)) return; // ignore our own write echo
+      refetchAll();
+    };
     const channel = supabase
       .channel(`data-${user.id}`)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "sessions", filter: `user_id=eq.${user.id}` },
-        () => refetchAll(),
+        handle("sessions"),
       )
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "projects", filter: `user_id=eq.${user.id}` },
-        () => refetchAll(),
+        handle("projects"),
       )
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "clients", filter: `user_id=eq.${user.id}` },
-        () => refetchAll(),
+        handle("clients"),
       )
       .subscribe();
     return () => {
@@ -410,6 +416,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         row.client_id = patch.clientId;
         delete row.clientId;
       }
+      markLocalWrite(id);
       const { error } = await supabase.from("projects").update(row).eq("id", id);
       if (error) {
         console.error(error);
@@ -451,6 +458,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const updateClient = useCallback(
     async (id: string, patch: Partial<Pick<Client, "name" | "notes">>) => {
       setClients((arr) => arr.map((c) => (c.id === id ? { ...c, ...patch } : c)));
+      markLocalWrite(id);
       const { error } = await supabase.from("clients").update(patch).eq("id", id);
       if (error) {
         console.error(error);
