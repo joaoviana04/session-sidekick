@@ -157,6 +157,21 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   // Debounced session writes — coalesce per-session field changes
   const pendingPatches = useRef<Map<string, Record<string, any>>>(new Map());
   const flushTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
+  // Tracks ids we wrote ourselves so we can ignore the realtime echo
+  const localWriteIds = useRef<Map<string, number>>(new Map());
+  const markLocalWrite = (id: string) => {
+    // suppress realtime refetch for ~1.5s after our own write
+    localWriteIds.current.set(id, Date.now() + 1500);
+  };
+  const isLocalEcho = (id: string) => {
+    const until = localWriteIds.current.get(id);
+    if (!until) return false;
+    if (Date.now() > until) {
+      localWriteIds.current.delete(id);
+      return false;
+    }
+    return true;
+  };
 
   const flushSession = useCallback(async (id: string) => {
     const row = pendingPatches.current.get(id);
@@ -167,6 +182,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
       clearTimeout(t);
       flushTimers.current.delete(id);
     }
+    markLocalWrite(id);
     const { error } = await supabase
       .from("sessions")
       .update(row as any)
@@ -184,12 +200,14 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         flushSession(id);
       }
     };
-    window.addEventListener("beforeunload", flushAll);
-    document.addEventListener("visibilitychange", () => {
+    const onVisibility = () => {
       if (document.visibilityState === "hidden") flushAll();
-    });
+    };
+    window.addEventListener("beforeunload", flushAll);
+    document.addEventListener("visibilitychange", onVisibility);
     return () => {
       window.removeEventListener("beforeunload", flushAll);
+      document.removeEventListener("visibilitychange", onVisibility);
     };
   }, [flushSession]);
 
@@ -222,22 +240,28 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   // Realtime — one channel for all three tables, scoped to user
   useEffect(() => {
     if (!user) return;
+    const handle = (table: "sessions" | "projects" | "clients") => (payload: any) => {
+      const row: any = payload.new ?? payload.old;
+      const id: string | undefined = row?.id;
+      if (id && isLocalEcho(id)) return; // ignore our own write echo
+      refetchAll();
+    };
     const channel = supabase
       .channel(`data-${user.id}`)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "sessions", filter: `user_id=eq.${user.id}` },
-        () => refetchAll(),
+        handle("sessions"),
       )
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "projects", filter: `user_id=eq.${user.id}` },
-        () => refetchAll(),
+        handle("projects"),
       )
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "clients", filter: `user_id=eq.${user.id}` },
-        () => refetchAll(),
+        handle("clients"),
       )
       .subscribe();
     return () => {
@@ -306,6 +330,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         .single();
       if (error) throw error;
       const created = sessionFromRow(data);
+      markLocalWrite(created.id);
       setSessions((arr) => [created, ...arr]);
       return created;
     },
@@ -355,6 +380,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         flushTimers.current.delete(id);
       }
       setSessions((arr) => arr.filter((s) => s.id !== id));
+      markLocalWrite(id);
       const { error } = await supabase.from("sessions").delete().eq("id", id);
       if (error) {
         console.error(error);
@@ -375,6 +401,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         .single();
       if (error) throw error;
       const created = projectFromRow(data);
+      markLocalWrite(created.id);
       setProjects((arr) => [created, ...arr]);
       return created;
     },
@@ -392,6 +419,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         row.client_id = patch.clientId;
         delete row.clientId;
       }
+      markLocalWrite(id);
       const { error } = await supabase.from("projects").update(row).eq("id", id);
       if (error) {
         console.error(error);
@@ -404,6 +432,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const removeProject = useCallback(
     async (id: string) => {
       setProjects((arr) => arr.filter((p) => p.id !== id));
+      markLocalWrite(id);
       const { error } = await supabase.from("projects").delete().eq("id", id);
       if (error) {
         console.error(error);
@@ -424,6 +453,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         .single();
       if (error) throw error;
       const created = clientFromRow(data);
+      markLocalWrite(created.id);
       setClients((arr) => [...arr, created].sort((a, b) => a.name.localeCompare(b.name)));
       return created;
     },
@@ -433,6 +463,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const updateClient = useCallback(
     async (id: string, patch: Partial<Pick<Client, "name" | "notes">>) => {
       setClients((arr) => arr.map((c) => (c.id === id ? { ...c, ...patch } : c)));
+      markLocalWrite(id);
       const { error } = await supabase.from("clients").update(patch).eq("id", id);
       if (error) {
         console.error(error);
@@ -445,6 +476,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const removeClient = useCallback(
     async (id: string) => {
       setClients((arr) => arr.filter((c) => c.id !== id));
+      markLocalWrite(id);
       const { error } = await supabase.from("clients").delete().eq("id", id);
       if (error) {
         console.error(error);
