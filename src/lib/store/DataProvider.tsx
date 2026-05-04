@@ -330,6 +330,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         .single();
       if (error) throw error;
       const created = sessionFromRow(data);
+      markLocalWrite(created.id);
       setSessions((arr) => [created, ...arr]);
       return created;
     },
@@ -379,6 +380,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         flushTimers.current.delete(id);
       }
       setSessions((arr) => arr.filter((s) => s.id !== id));
+      markLocalWrite(id);
       const { error } = await supabase.from("sessions").delete().eq("id", id);
       if (error) {
         console.error(error);
@@ -399,6 +401,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         .single();
       if (error) throw error;
       const created = projectFromRow(data);
+      markLocalWrite(created.id);
       setProjects((arr) => [created, ...arr]);
       return created;
     },
@@ -429,6 +432,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const removeProject = useCallback(
     async (id: string) => {
       setProjects((arr) => arr.filter((p) => p.id !== id));
+      markLocalWrite(id);
       const { error } = await supabase.from("projects").delete().eq("id", id);
       if (error) {
         console.error(error);
@@ -449,6 +453,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         .single();
       if (error) throw error;
       const created = clientFromRow(data);
+      markLocalWrite(created.id);
       setClients((arr) => [...arr, created].sort((a, b) => a.name.localeCompare(b.name)));
       return created;
     },
@@ -471,6 +476,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const removeClient = useCallback(
     async (id: string) => {
       setClients((arr) => arr.filter((c) => c.id !== id));
+      markLocalWrite(id);
       const { error } = await supabase.from("clients").delete().eq("id", id);
       if (error) {
         console.error(error);
