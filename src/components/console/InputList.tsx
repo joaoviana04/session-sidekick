@@ -130,7 +130,6 @@ export function InputList({ session }: { session: Session }) {
                       placeholder="Boom S" />
                   </td>
                 )}
-                {(["phantom", "pad", "hpf"] as const).map((flag) => (
                 <td className="px-2 py-1">
                   <div className="flex items-center justify-center gap-1">
                     {(
