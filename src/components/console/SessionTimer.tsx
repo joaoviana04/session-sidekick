@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Play, Pause, RotateCcw, History, Trash2 } from "lucide-react";
 import { useSession } from "@/lib/store/sessions";
 import type { Session, TimeLogEntry } from "@/lib/types";
@@ -50,19 +50,18 @@ export function SessionTimer({ session }: { session: Session }) {
     return () => clearInterval(id);
   }, [running]);
 
-  const totals = useMemo(() => {
-    const now = Date.now();
-    let total = 0;
-    let current = 0;
-    for (const e of log) {
-      const start = new Date(e.start).getTime();
-      const end = e.end ? new Date(e.end).getTime() : now;
-      const d = Math.max(0, end - start);
-      total += d;
-      if (!e.end) current = d;
-    }
-    return { total, current };
-  }, [log, running, log.length]);
+  // Recompute every render so the running entry ticks live (depends on Date.now()).
+  const now = Date.now();
+  let total = 0;
+  let current = 0;
+  for (const e of log) {
+    const start = new Date(e.start).getTime();
+    const end = e.end ? new Date(e.end).getTime() : now;
+    const d = Math.max(0, end - start);
+    total += d;
+    if (!e.end) current = d;
+  }
+  const totals = { total, current };
 
   const setLog = (next: TimeLogEntry[]) =>
     update(session.id, (s) => ({ ...s, timeLog: next }));
@@ -79,7 +78,10 @@ export function SessionTimer({ session }: { session: Session }) {
     if (!confirm("Clear all time log entries for this session?")) return;
     setLog([]);
   };
-  const remove = (id: string) => setLog(log.filter((e) => e.id !== id));
+  const remove = (id: string) => {
+    if (!confirm("Remove this time log entry?")) return;
+    setLog(log.filter((e) => e.id !== id));
+  };
 
   return (
     <div className="panel px-3 py-2 flex items-center gap-3">
