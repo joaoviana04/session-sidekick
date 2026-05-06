@@ -60,7 +60,7 @@ const SessionView = () => {
               className="block text-base md:text-sm text-muted-foreground bg-transparent outline-none focus:bg-surface-2 rounded-sm px-1 -ml-1 mt-1 w-full" />
           </div>
           <div className="w-full sm:w-auto sm:min-w-[240px]">
-            <SessionTimer />
+            <SessionTimer session={session} />
           </div>
         </header>
 
@@ -72,10 +72,10 @@ const SessionView = () => {
           <div className="grid lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
               <InputList session={session} />
-              <Notes session={session} />
+              <TakeLog session={session} />
             </div>
             <div className="space-y-6">
-              <TakeLog session={session} />
+              <Notes session={session} />
               <TapTempo />
             </div>
           </div>
