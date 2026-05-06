@@ -22,11 +22,16 @@ export function TapTempo() {
   return (
     <div className="panel p-2.5 flex items-center gap-2.5">
       <Music2 className="h-3.5 w-3.5 text-primary shrink-0 ml-1" />
-      <div className="text-xs label-mono">Tap</div>
+      <div className="flex flex-col leading-tight">
+        <span className="font-display text-lg font-bold tabular-nums">
+          {bpm ?? "—"}
+          <span className="text-[9px] font-mono opacity-70 ml-1">BPM</span>
+        </span>
+        <span className="label-mono">{taps.length > 0 ? `${taps.length} taps` : "tap to start"}</span>
+      </div>
       <button onClick={tap}
-        className="ml-auto px-4 py-2 rounded-sm bg-gradient-amber text-primary-foreground font-display text-base font-bold active:scale-95 transition tabular-nums min-w-[88px]">
-        {bpm ?? "TAP"}
-        <span className="text-[9px] font-mono opacity-70 ml-1">{bpm ? "BPM" : ""}</span>
+        className="ml-auto px-5 py-2 rounded-sm bg-gradient-amber text-primary-foreground font-display text-sm font-bold active:scale-95 transition uppercase tracking-wider">
+        Tap
       </button>
       <button onClick={() => { setTaps([]); setBpm(null); }}
         className="text-[10px] text-muted-foreground hover:text-foreground uppercase tracking-wider">reset</button>
