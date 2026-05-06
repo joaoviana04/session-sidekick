@@ -20,18 +20,16 @@ export function TapTempo() {
   };
 
   return (
-    <div className="panel p-4">
-      <div className="flex items-center gap-2 mb-3">
-        <Music2 className="h-4 w-4 text-primary" />
-        <div className="font-display font-semibold">Tap Tempo</div>
-      </div>
+    <div className="panel p-2.5 flex items-center gap-2.5">
+      <Music2 className="h-3.5 w-3.5 text-primary shrink-0 ml-1" />
+      <div className="text-xs label-mono">Tap</div>
       <button onClick={tap}
-        className="w-full py-6 rounded-md bg-gradient-amber text-primary-foreground font-display text-3xl font-bold active:scale-95 transition">
+        className="ml-auto px-4 py-2 rounded-sm bg-gradient-amber text-primary-foreground font-display text-base font-bold active:scale-95 transition tabular-nums min-w-[88px]">
         {bpm ?? "TAP"}
-        <div className="text-xs font-mono opacity-70 mt-1">{bpm ? "BPM" : "tap to start"}</div>
+        <span className="text-[9px] font-mono opacity-70 ml-1">{bpm ? "BPM" : ""}</span>
       </button>
       <button onClick={() => { setTaps([]); setBpm(null); }}
-        className="w-full mt-2 text-xs text-muted-foreground hover:text-foreground">reset</button>
+        className="text-[10px] text-muted-foreground hover:text-foreground uppercase tracking-wider">reset</button>
     </div>
   );
 }

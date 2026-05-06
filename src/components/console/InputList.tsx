@@ -100,9 +100,7 @@ export function InputList({ session }: { session: Session }) {
               <th className="px-3 py-2">Preamp</th>
               {isLive && <th className="px-3 py-2">Stage box</th>}
               {isLive && <th className="px-3 py-2">Stand</th>}
-              <th className="px-3 py-2 text-center">+48</th>
-              <th className="px-3 py-2 text-center">Pad</th>
-              <th className="px-3 py-2 text-center">HPF</th>
+              <th className="px-3 py-2 text-center w-[120px]">Options</th>
               <th className="px-3 py-2">Notes</th>
               <th className="px-3 py-2 w-10"></th>
             </tr>
@@ -132,20 +130,30 @@ export function InputList({ session }: { session: Session }) {
                       placeholder="Boom S" />
                   </td>
                 )}
-                {(["phantom", "pad", "hpf"] as const).map((flag) => (
-                  <td key={flag} className="px-2 py-1 text-center">
-                    <button onClick={() => toggle(row.id, flag)}
-                      className={cn(
-                        "h-5 w-9 rounded-full transition relative",
-                        row[flag] ? "bg-primary" : "bg-surface-3"
-                      )}>
-                      <span className={cn(
-                        "absolute top-0.5 h-4 w-4 rounded-full bg-background transition-all",
-                        row[flag] ? "left-[18px]" : "left-0.5"
-                      )} />
-                    </button>
-                  </td>
-                ))}
+                <td className="px-2 py-1">
+                  <div className="flex items-center justify-center gap-1">
+                    {(
+                      [
+                        { key: "phantom", label: "48V" },
+                        { key: "pad", label: "PAD" },
+                        { key: "hpf", label: "HPF" },
+                      ] as const
+                    ).map((f) => (
+                      <button
+                        key={f.key}
+                        onClick={() => toggle(row.id, f.key)}
+                        className={cn(
+                          "text-[10px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded-sm border transition",
+                          row[f.key]
+                            ? "bg-primary/20 text-primary border-primary/40"
+                            : "bg-surface-2 text-muted-foreground border-border hover:text-foreground"
+                        )}
+                      >
+                        {f.label}
+                      </button>
+                    ))}
+                  </div>
+                </td>
                 <td className="px-2 py-1">
                   <input value={row.notes} onChange={(e) => setField(row.id, "notes", e.target.value)}
                     className="w-full bg-transparent px-2 py-1 rounded-sm hover:bg-surface-2 focus:bg-surface-2 outline-none focus:ring-1 focus:ring-primary text-sm"
@@ -160,7 +168,7 @@ export function InputList({ session }: { session: Session }) {
               </tr>
             ))}
             {inputs.length === 0 && (
-              <tr><td colSpan={isLive ? 11 : 9} className="px-4 py-8 text-center text-muted-foreground text-sm">No channels yet.</td></tr>
+              <tr><td colSpan={isLive ? 9 : 7} className="px-4 py-8 text-center text-muted-foreground text-sm">No channels yet.</td></tr>
             )}
           </tbody>
         </table>

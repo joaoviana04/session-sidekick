@@ -78,6 +78,12 @@ export interface ShowLogEntry {
   message: string;
 }
 
+export interface TimeLogEntry {
+  id: string;
+  start: string; // ISO
+  end: string | null; // ISO when stopped, null while running
+}
+
 export interface Session {
   id: string;
   type: SessionType;
@@ -111,6 +117,7 @@ export interface Session {
   monitorMixes?: MonitorMix[];
   setlist?: SetlistSong[];
   showLog?: ShowLogEntry[];
+  timeLog?: TimeLogEntry[];
 }
 
 export interface Client {

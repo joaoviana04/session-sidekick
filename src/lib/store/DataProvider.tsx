@@ -54,6 +54,7 @@ function sessionFromRow(row: any): Session {
     monitorMixes: row.monitor_mixes ?? [],
     setlist: row.setlist ?? [],
     showLog: row.show_log ?? [],
+    timeLog: row.time_log ?? [],
   };
 }
 
@@ -82,6 +83,7 @@ function sessionToRowPatch(patch: Partial<Session>): Record<string, any> {
   if ("monitorMixes" in patch) p.monitor_mixes = patch.monitorMixes;
   if ("setlist" in patch) p.setlist = patch.setlist;
   if ("showLog" in patch) p.show_log = patch.showLog;
+  if ("timeLog" in patch) p.time_log = patch.timeLog;
   return p;
 }
 
