@@ -219,6 +219,7 @@ export type Database = {
           show_date: string | null
           show_log: Json
           takes: Json
+          time_log: Json
           title: string
           true_peak_target: string | null
           type: Database["public"]["Enums"]["session_type"]
@@ -249,6 +250,7 @@ export type Database = {
           show_date?: string | null
           show_log?: Json
           takes?: Json
+          time_log?: Json
           title: string
           true_peak_target?: string | null
           type: Database["public"]["Enums"]["session_type"]
@@ -279,6 +281,7 @@ export type Database = {
           show_date?: string | null
           show_log?: Json
           takes?: Json
+          time_log?: Json
           title?: string
           true_peak_target?: string | null
           type?: Database["public"]["Enums"]["session_type"]
