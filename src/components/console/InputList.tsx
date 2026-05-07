@@ -1,4 +1,4 @@
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Table2, Workflow } from "lucide-react";
 import { useState } from "react";
 import { useSession, helpers } from "@/lib/store/sessions";
 import type { Session } from "@/lib/types";
@@ -8,6 +8,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { SignalFlow } from "./SignalFlow";
 
 export function InputList({ session }: { session: Session }) {
   const { update } = useSession(session.id);
@@ -15,6 +16,14 @@ export function InputList({ session }: { session: Session }) {
   const isLive = session.type === "live";
   const [customCount, setCustomCount] = useState("");
   const [popOpen, setPopOpen] = useState(false);
+  const [view, setView] = useState<"table" | "flow">(() => {
+    const saved = typeof window !== "undefined" ? localStorage.getItem("inputListView") : null;
+    return saved === "flow" ? "flow" : "table";
+  });
+  const setViewPersist = (v: "table" | "flow") => {
+    setView(v);
+    try { localStorage.setItem("inputListView", v); } catch { /* ignore */ }
+  };
 
   const setInputs = (fn: (i: typeof inputs) => typeof inputs) =>
     update(session.id, (s) => ({ ...s, inputs: fn(s.inputs ?? []) }));
@@ -44,6 +53,29 @@ export function InputList({ session }: { session: Session }) {
           <div className="font-display font-semibold">{isLive ? "Patch List" : "Input List"}</div>
           <div className="label-mono mt-0.5">{inputs.length} channels</div>
         </div>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center rounded-sm bg-surface-2 border border-border overflow-hidden">
+            <button
+              onClick={() => setViewPersist("table")}
+              className={cn(
+                "flex items-center gap-1 text-xs px-2 py-1.5 transition",
+                view === "table" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground",
+              )}
+              title="Table view"
+            >
+              <Table2 className="h-3.5 w-3.5" /> <span className="hidden sm:inline">Table</span>
+            </button>
+            <button
+              onClick={() => setViewPersist("flow")}
+              className={cn(
+                "flex items-center gap-1 text-xs px-2 py-1.5 transition",
+                view === "flow" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground",
+              )}
+              title="Signal flow view"
+            >
+              <Workflow className="h-3.5 w-3.5" /> <span className="hidden sm:inline">Flow</span>
+            </button>
+          </div>
         <Popover open={popOpen} onOpenChange={setPopOpen}>
           <PopoverTrigger className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-sm bg-surface-2 hover:bg-surface-3 transition">
             <Plus className="h-3.5 w-3.5" /> Add channels
@@ -87,8 +119,13 @@ export function InputList({ session }: { session: Session }) {
             </form>
           </PopoverContent>
         </Popover>
+        </div>
       </div>
 
+      {view === "flow" ? (
+        <SignalFlow session={session} />
+      ) : (
+        <>
       {/* Desktop / wide: classic table */}
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full text-sm">
@@ -277,6 +314,8 @@ export function InputList({ session }: { session: Session }) {
           <div className="px-4 py-8 text-center text-muted-foreground text-sm">No channels yet.</div>
         )}
       </div>
+        </>
+      )}
     </div>
   );
 }
