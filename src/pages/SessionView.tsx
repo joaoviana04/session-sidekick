@@ -71,6 +71,7 @@ const SessionView = () => {
           id: Math.random().toString(36).slice(2, 10),
           label: `Process ${i.source || i.mic}${i.ch ? ` (ch ${i.ch})` : ""}`,
           done: false,
+          group: "From recording",
         }));
       await update(created.id, {
         bpm: session.bpm,
