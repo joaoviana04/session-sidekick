@@ -1,5 +1,5 @@
-import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Mic, Sliders, Zap, Download, FolderOpen, User } from "lucide-react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, Mic, Sliders, Zap, Download, FolderOpen, User, Wand2 } from "lucide-react";
 import { AppShell } from "@/components/console/AppShell";
 import { useSessions } from "@/lib/store/sessions";
 import { useProjects } from "@/lib/store/projects";
@@ -17,10 +17,12 @@ import { MonitorMixes } from "@/components/console/MonitorMixes";
 import { Setlist } from "@/components/console/Setlist";
 import { ShowLog } from "@/components/console/ShowLog";
 import { exportSessionPdf } from "@/lib/exportPdf";
+import { toast } from "@/hooks/use-toast";
 
 const SessionView = () => {
   const { id } = useParams<{ id: string }>();
-  const { sessions, update } = useSessions();
+  const { sessions, update, create } = useSessions();
+  const nav = useNavigate();
   const { projects } = useProjects();
   const { clients } = useClients();
   const session = sessions.find((s) => s.id === id);
@@ -46,6 +48,44 @@ const SessionView = () => {
 
   const project = projects.find((p) => p.id === session.projectId) ?? null;
   const client = project ? clients.find((c) => c.id === project.clientId) ?? null : null;
+
+  const startMixFromRecording = async () => {
+    const baseTitle = session.title?.trim() || "Untitled";
+    const mixTitle = /\bmix\b/i.test(baseTitle) ? baseTitle : `${baseTitle} — Mix`;
+    try {
+      const created = await create("mix", mixTitle, session.artist || "", session.projectId ?? null);
+      // Seed mix session with metadata + a tracked-from reference + a checklist derived from the inputs.
+      const trackedSongs = Array.from(
+        new Set((session.takes ?? []).map((t) => (t.song || "").trim()).filter(Boolean)),
+      );
+      const trackedSummary = trackedSongs.length
+        ? `Songs tracked: ${trackedSongs.join(", ")}\n\n`
+        : "";
+      const recapNotes =
+        `${trackedSummary}Mixing from recording session "${baseTitle}"` +
+        (session.notes ? `\n\n— Tracking notes —\n${session.notes}` : "");
+      const seedChecklist = (session.inputs ?? [])
+        .filter((i) => (i.source || i.mic))
+        .slice(0, 24)
+        .map((i) => ({
+          id: Math.random().toString(36).slice(2, 10),
+          label: `Process ${i.source || i.mic}${i.ch ? ` (ch ${i.ch})` : ""}`,
+          done: false,
+          group: "From recording",
+        }));
+      await update(created.id, {
+        bpm: session.bpm,
+        key: session.key,
+        sampleRate: session.sampleRate,
+        notes: recapNotes,
+        checklist: seedChecklist,
+      });
+      toast({ title: "Mix session created", description: "Seeded from this recording." });
+      nav(`/session/${created.id}`);
+    } catch (e: any) {
+      toast({ title: "Could not create mix session", description: e?.message ?? "Try again.", variant: "destructive" });
+    }
+  };
 
   return (
     <AppShell>
@@ -76,6 +116,15 @@ const SessionView = () => {
             >
               <Download className="h-3.5 w-3.5" /> Export PDF
             </button>
+            {session.type === "recording" && (
+              <button
+                onClick={startMixFromRecording}
+                className="flex items-center justify-center gap-1.5 text-xs px-2.5 py-1.5 rounded-sm bg-gradient-amber text-primary-foreground hover:opacity-90 transition"
+                title="Create a new mix session seeded from this recording"
+              >
+                <Wand2 className="h-3.5 w-3.5" /> Start mix from this
+              </button>
+            )}
           </div>
         </header>
 
