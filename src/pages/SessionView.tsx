@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Mic, Sliders, Zap, Download, FolderOpen, User, Wand2 } from "lucide-react";
+import { ArrowLeft, Mic, Sliders, Zap, Download, FolderOpen, User, Wand2, Maximize2 } from "lucide-react";
 import { AppShell } from "@/components/console/AppShell";
 import { useSessions } from "@/lib/store/sessions";
 import { useProjects } from "@/lib/store/projects";
@@ -124,6 +124,15 @@ const SessionView = () => {
               >
                 <Wand2 className="h-3.5 w-3.5" /> Start mix from this
               </button>
+            )}
+            {session.type === "live" && (
+              <Link
+                to={`/session/${session.id}/show`}
+                className="flex items-center justify-center gap-1.5 text-xs px-2.5 py-1.5 rounded-sm bg-gradient-amber text-primary-foreground hover:opacity-90 transition"
+                title="Fullscreen Show Mode for FOH"
+              >
+                <Maximize2 className="h-3.5 w-3.5" /> Show Mode
+              </Link>
             )}
           </div>
         </header>
