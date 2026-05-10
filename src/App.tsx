@@ -12,12 +12,31 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 const Index = lazy(() => import("./pages/Index.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 const SessionView = lazy(() => import("./pages/SessionView.tsx"));
+const SessionShowMode = lazy(() => import("./pages/SessionShowMode.tsx"));
 const Tools = lazy(() => import("./pages/Tools.tsx"));
 const Auth = lazy(() => import("./pages/Auth.tsx"));
 const Projects = lazy(() => import("./pages/Projects.tsx"));
 const ProjectView = lazy(() => import("./pages/ProjectView.tsx"));
 const Clients = lazy(() => import("./pages/Clients.tsx"));
 const Share = lazy(() => import("./pages/Share.tsx"));
+const Landing = lazy(() => import("./pages/Landing.tsx"));
+
+import { useAuth } from "@/hooks/useAuth";
+
+const RootRoute = () => {
+  const { user, loading } = useAuth();
+  if (loading) {
+    return (
+      <div className="min-h-screen grid place-items-center">
+        <div className="flex items-center gap-2 text-muted-foreground text-sm">
+          <span className="led animate-pulse-led" />
+          <span className="label-mono">connecting</span>
+        </div>
+      </div>
+    );
+  }
+  return user ? <Index /> : <Landing />;
+};
 
 const RouteFallback = () => (
   <div className="min-h-screen grid place-items-center bg-background">
@@ -43,11 +62,12 @@ const App = () => (
               <Routes>
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/share/:token" element={<Share />} />
-                <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+                <Route path="/" element={<RootRoute />} />
                 <Route path="/projects" element={<ProtectedRoute><Projects /></ProtectedRoute>} />
                 <Route path="/projects/:id" element={<ProtectedRoute><ProjectView /></ProtectedRoute>} />
                 <Route path="/clients" element={<ProtectedRoute><Clients /></ProtectedRoute>} />
                 <Route path="/session/:id" element={<ProtectedRoute><SessionView /></ProtectedRoute>} />
+                <Route path="/session/:id/show" element={<ProtectedRoute><SessionShowMode /></ProtectedRoute>} />
                 <Route path="/tools" element={<ProtectedRoute><Tools /></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
