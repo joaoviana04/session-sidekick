@@ -497,6 +497,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         createSession,
         updateSession,
         removeSession,
+        flushSession,
         projects,
         createProject,
         updateProject,
