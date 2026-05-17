@@ -122,6 +122,7 @@ interface DataCtx {
     patch: Partial<Session> | ((s: Session) => Session),
   ) => Promise<void>;
   removeSession: (id: string) => Promise<void>;
+  flushSession: (id: string) => Promise<void>;
   // Projects
   projects: Project[];
   createProject: (
