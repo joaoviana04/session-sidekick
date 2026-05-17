@@ -122,6 +122,7 @@ interface DataCtx {
     patch: Partial<Session> | ((s: Session) => Session),
   ) => Promise<void>;
   removeSession: (id: string) => Promise<void>;
+  flushSession: (id: string) => Promise<void>;
   // Projects
   projects: Project[];
   createProject: (
@@ -197,18 +198,65 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
 
   // Flush all pending writes when the page is hidden / unloaded
   useEffect(() => {
-    const flushAll = () => {
-      for (const id of Array.from(pendingPatches.current.keys())) {
-        flushSession(id);
+    // On hide/unload the browser may kill in-flight fetches before they
+    // complete. Use a direct REST call with `keepalive: true` so the patch
+    // is guaranteed to be sent even as the tab tears down.
+    const flushAllKeepalive = () => {
+      const ids = Array.from(pendingPatches.current.keys());
+      if (ids.length === 0) return;
+      const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+      const anon = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined;
+      // Best-effort access token from the supabase-js session in localStorage
+      let token: string | undefined;
+      try {
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.startsWith("sb-") && k.endsWith("-auth-token")) {
+            const raw = localStorage.getItem(k);
+            if (raw) token = JSON.parse(raw)?.access_token;
+            break;
+          }
+        }
+      } catch {}
+      for (const id of ids) {
+        const row = pendingPatches.current.get(id);
+        pendingPatches.current.delete(id);
+        const t = flushTimers.current.get(id);
+        if (t) {
+          clearTimeout(t);
+          flushTimers.current.delete(id);
+        }
+        if (!row || Object.keys(row).length === 0) continue;
+        markLocalWrite(id);
+        if (url && anon) {
+          try {
+            fetch(`${url}/rest/v1/sessions?id=eq.${id}`, {
+              method: "PATCH",
+              headers: {
+                apikey: anon,
+                Authorization: `Bearer ${token ?? anon}`,
+                "Content-Type": "application/json",
+                Prefer: "return=minimal",
+              },
+              body: JSON.stringify(row),
+              keepalive: true,
+            }).catch(() => {});
+          } catch {}
+        } else {
+          // Fallback to normal client (may be cancelled mid-flight)
+          flushSession(id);
+        }
       }
     };
     const onVisibility = () => {
-      if (document.visibilityState === "hidden") flushAll();
+      if (document.visibilityState === "hidden") flushAllKeepalive();
     };
-    window.addEventListener("beforeunload", flushAll);
+    window.addEventListener("pagehide", flushAllKeepalive);
+    window.addEventListener("beforeunload", flushAllKeepalive);
     document.addEventListener("visibilitychange", onVisibility);
     return () => {
-      window.removeEventListener("beforeunload", flushAll);
+      window.removeEventListener("pagehide", flushAllKeepalive);
+      window.removeEventListener("beforeunload", flushAllKeepalive);
       document.removeEventListener("visibilitychange", onVisibility);
     };
   }, [flushSession]);
@@ -496,6 +544,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         createSession,
         updateSession,
         removeSession,
+        flushSession,
         projects,
         createProject,
         updateProject,

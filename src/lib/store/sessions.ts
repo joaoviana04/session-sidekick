@@ -29,9 +29,9 @@ export function useSessions(projectId?: string | null) {
 }
 
 export function useSession(id: string | undefined) {
-  const { sessions, updateSession, removeSession } = useData();
+  const { sessions, updateSession, removeSession, flushSession } = useData();
   const session = sessions.find((s) => s.id === id);
-  return { session, update: updateSession, remove: removeSession };
+  return { session, update: updateSession, remove: removeSession, flush: flushSession };
 }
 
 export const helpers = {
