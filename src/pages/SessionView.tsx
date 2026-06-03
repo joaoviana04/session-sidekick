@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Mic, Sliders, Zap, Download, FolderOpen, User, Wand2, Maximize2 } from "lucide-react";
+import { ArrowLeft, Mic, Sliders, Zap, Download, FolderOpen, User, Wand2, Maximize2, PenLine } from "lucide-react";
 import { AppShell } from "@/components/console/AppShell";
 import { useSessions } from "@/lib/store/sessions";
 import { useProjects } from "@/lib/store/projects";
@@ -16,6 +16,10 @@ import { TapTempo } from "@/components/console/TapTempo";
 import { MonitorMixes } from "@/components/console/MonitorMixes";
 import { Setlist } from "@/components/console/Setlist";
 import { ShowLog } from "@/components/console/ShowLog";
+import { Lyrics } from "@/components/console/Lyrics";
+import { SongStructure } from "@/components/console/SongStructure";
+import { Ideas } from "@/components/console/Ideas";
+import { Instrumentation } from "@/components/console/Instrumentation";
 import { exportSessionPdf } from "@/lib/exportPdf";
 import { toast } from "@/hooks/use-toast";
 
@@ -40,11 +44,21 @@ const SessionView = () => {
     );
   }
 
-  const Icon = session.type === "recording" ? Mic : session.type === "mix" ? Sliders : Zap;
+  const Icon =
+    session.type === "recording" ? Mic
+    : session.type === "mix" ? Sliders
+    : session.type === "compose" ? PenLine
+    : Zap;
   const accent =
-    session.type === "recording" ? "text-info" : session.type === "mix" ? "text-primary" : "text-success";
+    session.type === "recording" ? "text-info"
+    : session.type === "mix" ? "text-primary"
+    : session.type === "compose" ? "text-accent"
+    : "text-success";
   const typeLabel =
-    session.type === "recording" ? "tracking session" : session.type === "mix" ? "mix session" : "live session";
+    session.type === "recording" ? "tracking session"
+    : session.type === "mix" ? "mix session"
+    : session.type === "compose" ? "compose session"
+    : "live session";
 
   const project = projects.find((p) => p.id === session.projectId) ?? null;
   const client = project ? clients.find((c) => c.id === project.clientId) ?? null : null;
@@ -186,6 +200,20 @@ const SessionView = () => {
               <Revisions session={session} />
               <References session={session} />
               <Notes session={session} />
+            </div>
+          </div>
+        ) : session.type === "compose" ? (
+          <div className="grid lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-6">
+              <Lyrics session={session} />
+              <SongStructure session={session} />
+              <Ideas session={session} />
+            </div>
+            <div className="space-y-6">
+              <Instrumentation session={session} />
+              <References session={session} />
+              <Notes session={session} />
+              <TapTempo />
             </div>
           </div>
         ) : (
