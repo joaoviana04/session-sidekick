@@ -1,4 +1,4 @@
-export type SessionType = "recording" | "mix" | "live";
+export type SessionType = "recording" | "mix" | "live" | "compose";
 
 export interface InputChannel {
   id: string;
@@ -78,6 +78,46 @@ export interface ShowLogEntry {
   message: string;
 }
 
+// ===== Compose / production-specific types =====
+export type SongSectionType =
+  | "intro"
+  | "verse"
+  | "pre-chorus"
+  | "chorus"
+  | "bridge"
+  | "solo"
+  | "breakdown"
+  | "outro"
+  | "interlude"
+  | "custom";
+
+export interface SongSection {
+  id: string;
+  position: number;
+  type: SongSectionType;
+  label: string; // free label, e.g. "Verse 1"
+  bars: string; // "8" or "8 bars"
+  chords: string; // "Am — F — C — G"
+  notes: string;
+}
+
+export type IdeaKind = "lyric" | "melody" | "chord" | "production" | "reference" | "other";
+export interface IdeaCard {
+  id: string;
+  kind: IdeaKind;
+  title: string;
+  body: string;
+  createdAt: string;
+}
+
+export interface InstrumentationItem {
+  id: string;
+  name: string;       // "Rhodes", "Sub bass"
+  role: string;       // "pad", "lead", "rhythm"
+  patch: string;      // plugin / preset
+  notes: string;
+}
+
 export interface TimeLogEntry {
   id: string;
   start: string; // ISO
@@ -118,6 +158,13 @@ export interface Session {
   setlist?: SetlistSong[];
   showLog?: ShowLogEntry[];
   timeLog?: TimeLogEntry[];
+  // compose / production
+  lyrics?: string;
+  structure?: SongSection[];
+  ideas?: IdeaCard[];
+  instrumentation?: InstrumentationItem[];
+  mood?: string;
+  tempoFeel?: string;
 }
 
 export interface Client {

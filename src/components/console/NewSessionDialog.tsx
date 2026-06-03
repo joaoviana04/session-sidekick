@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Mic, Sliders, Radio } from "lucide-react";
+import { Mic, Sliders, Radio, PenLine } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -48,11 +48,12 @@ export function NewSessionDialog({
         </DialogHeader>
 
         <form onSubmit={submit} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {([
               { v: "recording", label: "Recording", desc: "Inputs - Takes - Notes", icon: Mic, color: "text-info" },
               { v: "mix", label: "Mix", desc: "Checklist - Refs - Revisions", icon: Sliders, color: "text-primary" },
               { v: "live", label: "Live", desc: "Patch - Monitors - Setlist", icon: Radio, color: "text-success" },
+              { v: "compose", label: "Compose", desc: "Lyrics - Structure - Ideas", icon: PenLine, color: "text-accent" },
             ] as const).map((o) => (
               <button type="button" key={o.v} onClick={() => setType(o.v)}
                 className={cn(
@@ -72,6 +73,7 @@ export function NewSessionDialog({
               placeholder={
                 type === "recording" ? "e.g. Drums tracking - Song A"
                 : type === "mix" ? "e.g. Single - Mix v3"
+                : type === "compose" ? "e.g. Song A - writing session"
                 : "e.g. Tour - Lisbon - Coliseu"
               }
               className="bg-input border-border" autoFocus required />

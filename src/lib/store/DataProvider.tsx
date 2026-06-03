@@ -55,6 +55,12 @@ function sessionFromRow(row: any): Session {
     setlist: row.setlist ?? [],
     showLog: row.show_log ?? [],
     timeLog: row.time_log ?? [],
+    lyrics: row.lyrics ?? "",
+    structure: row.structure ?? [],
+    ideas: row.ideas ?? [],
+    instrumentation: row.instrumentation ?? [],
+    mood: row.mood ?? "",
+    tempoFeel: row.tempo_feel ?? "",
   };
 }
 
@@ -84,6 +90,12 @@ function sessionToRowPatch(patch: Partial<Session>): Record<string, any> {
   if ("setlist" in patch) p.setlist = patch.setlist;
   if ("showLog" in patch) p.show_log = patch.showLog;
   if ("timeLog" in patch) p.time_log = patch.timeLog;
+  if ("lyrics" in patch) p.lyrics = patch.lyrics;
+  if ("structure" in patch) p.structure = patch.structure;
+  if ("ideas" in patch) p.ideas = patch.ideas;
+  if ("instrumentation" in patch) p.instrumentation = patch.instrumentation;
+  if ("mood" in patch) p.mood = patch.mood;
+  if ("tempoFeel" in patch) p.tempo_feel = patch.tempoFeel;
   return p;
 }
 
@@ -372,6 +384,11 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         base.setlist = [];
         base.show_log = [];
         base.sample_rate = "48 kHz / 24-bit";
+      } else if (type === "compose") {
+        base.instrumentation = [];
+        base.structure = [];
+        base.ideas = [];
+        base.lyrics = "";
       }
       const { data, error } = await supabase
         .from("sessions")

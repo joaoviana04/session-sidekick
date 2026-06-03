@@ -16,6 +16,13 @@ export function SessionMeta({ session }: { session: Session }) {
           { key: "lufsTarget", label: "LUFS Target", placeholder: "-14 LUFS" },
           { key: "truePeakTarget", label: "True Peak", placeholder: "-1 dBTP" },
         ]
+      : session.type === "compose"
+      ? [
+          { key: "bpm", label: "BPM", placeholder: "92" },
+          { key: "key", label: "Key", placeholder: "F# minor" },
+          { key: "tempoFeel", label: "Feel", placeholder: "half-time / shuffle / 6/8" },
+          { key: "mood", label: "Mood", placeholder: "melancholic, hopeful" },
+        ]
       : [
           { key: "venue", label: "Venue", placeholder: "Coliseu dos Recreios" },
           { key: "showDate", label: "Show date", placeholder: "2026-05-12" },
