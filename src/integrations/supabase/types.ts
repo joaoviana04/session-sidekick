@@ -203,12 +203,16 @@ export type Database = {
           created_at: string
           foh_console: string | null
           id: string
+          ideas: Json
           inputs: Json
+          instrumentation: Json
           key: string | null
           lufs_target: string | null
+          lyrics: string
           monitor_console: string | null
           monitor_mixes: Json
           monitor_notes: string | null
+          mood: string
           notes: string | null
           pa_system: string | null
           project_id: string | null
@@ -218,7 +222,9 @@ export type Database = {
           setlist: Json
           show_date: string | null
           show_log: Json
+          structure: Json
           takes: Json
+          tempo_feel: string
           time_log: Json
           title: string
           true_peak_target: string | null
@@ -234,12 +240,16 @@ export type Database = {
           created_at?: string
           foh_console?: string | null
           id?: string
+          ideas?: Json
           inputs?: Json
+          instrumentation?: Json
           key?: string | null
           lufs_target?: string | null
+          lyrics?: string
           monitor_console?: string | null
           monitor_mixes?: Json
           monitor_notes?: string | null
+          mood?: string
           notes?: string | null
           pa_system?: string | null
           project_id?: string | null
@@ -249,7 +259,9 @@ export type Database = {
           setlist?: Json
           show_date?: string | null
           show_log?: Json
+          structure?: Json
           takes?: Json
+          tempo_feel?: string
           time_log?: Json
           title: string
           true_peak_target?: string | null
@@ -265,12 +277,16 @@ export type Database = {
           created_at?: string
           foh_console?: string | null
           id?: string
+          ideas?: Json
           inputs?: Json
+          instrumentation?: Json
           key?: string | null
           lufs_target?: string | null
+          lyrics?: string
           monitor_console?: string | null
           monitor_mixes?: Json
           monitor_notes?: string | null
+          mood?: string
           notes?: string | null
           pa_system?: string | null
           project_id?: string | null
@@ -280,7 +296,9 @@ export type Database = {
           setlist?: Json
           show_date?: string | null
           show_log?: Json
+          structure?: Json
           takes?: Json
+          tempo_feel?: string
           time_log?: Json
           title?: string
           true_peak_target?: string | null
@@ -307,7 +325,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      session_type: "recording" | "mix" | "live"
+      session_type: "recording" | "mix" | "live" | "compose"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -435,7 +453,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      session_type: ["recording", "mix", "live"],
+      session_type: ["recording", "mix", "live", "compose"],
     },
   },
 } as const
