@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Mic, Sliders, Wrench, Radio, Plus, FolderKanban, Users, LogOut, Menu, X, Zap } from "lucide-react";
+import { Mic, Sliders, Wrench, Radio, Plus, FolderKanban, Users, LogOut, Menu, X, Zap, User2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSessions } from "@/lib/store/sessions";
 import { NewSessionDialog } from "./NewSessionDialog";
@@ -94,10 +94,12 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="mt-auto p-4 border-t border-border">
           {user && (
             <div className="flex items-center gap-2 mb-3 text-xs">
-              <div className="h-7 w-7 rounded-full bg-surface-2 grid place-items-center font-mono text-[10px] text-muted-foreground shrink-0">
-                {user.email?.[0]?.toUpperCase() ?? "?"}
-              </div>
-              <span className="truncate flex-1 text-muted-foreground">{user.email}</span>
+              <Link to="/profile" className="flex items-center gap-2 flex-1 min-w-0 hover:text-foreground transition">
+                <div className="h-7 w-7 rounded-full bg-surface-2 grid place-items-center font-mono text-[10px] text-muted-foreground shrink-0">
+                  {user.email?.[0]?.toUpperCase() ?? "?"}
+                </div>
+                <span className="truncate text-muted-foreground">{user.email}</span>
+              </Link>
               <button onClick={signOut} title="Sign out"
                 className="text-muted-foreground hover:text-destructive transition">
                 <LogOut className="h-3.5 w-3.5" />
