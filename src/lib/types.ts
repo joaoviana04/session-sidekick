@@ -165,6 +165,8 @@ export interface Session {
   instrumentation?: InstrumentationItem[];
   mood?: string;
   tempoFeel?: string;
+  /** Optional per-session hourly rate override (in profile currency). */
+  hourlyRate?: number | null;
 }
 
 export interface Client {

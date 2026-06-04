@@ -1,11 +1,24 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, memo, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Mic, Sliders, Wrench, Radio, Plus, FolderKanban, Users, LogOut, Menu, X, Zap } from "lucide-react";
+import { Mic, Sliders, Wrench, Radio, Plus, FolderKanban, Users, LogOut, Menu, X, Zap, User2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSessions } from "@/lib/store/sessions";
 import { NewSessionDialog } from "./NewSessionDialog";
 import { useAuth } from "@/hooks/useAuth";
 import sessionsLogo from "@/assets/sessions-logo.png";
+
+const LiveClock = memo(function LiveClock() {
+  const [time, setTime] = useState(() => new Date());
+  useEffect(() => {
+    const t = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(t);
+  }, []);
+  return (
+    <span className="ml-auto font-mono text-xs text-muted-foreground">
+      {time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false })}
+    </span>
+  );
+});
 
 export function AppShell({ children }: { children: ReactNode }) {
   const location = useLocation();
@@ -13,12 +26,6 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { user, signOut } = useAuth();
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [time, setTime] = useState(() => new Date());
-
-  useEffect(() => {
-    const t = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(t);
-  }, []);
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -30,6 +37,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     { to: "/projects", label: "Projects", icon: FolderKanban },
     { to: "/clients", label: "Clients", icon: Users },
     { to: "/tools", label: "Tools", icon: Wrench },
+    { to: "/profile", label: "Profile", icon: User2 },
   ];
 
   return (
@@ -94,10 +102,12 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="mt-auto p-4 border-t border-border">
           {user && (
             <div className="flex items-center gap-2 mb-3 text-xs">
-              <div className="h-7 w-7 rounded-full bg-surface-2 grid place-items-center font-mono text-[10px] text-muted-foreground shrink-0">
-                {user.email?.[0]?.toUpperCase() ?? "?"}
-              </div>
-              <span className="truncate flex-1 text-muted-foreground">{user.email}</span>
+              <Link to="/profile" className="flex items-center gap-2 flex-1 min-w-0 hover:text-foreground transition">
+                <div className="h-7 w-7 rounded-full bg-surface-2 grid place-items-center font-mono text-[10px] text-muted-foreground shrink-0">
+                  {user.email?.[0]?.toUpperCase() ?? "?"}
+                </div>
+                <span className="truncate text-muted-foreground">{user.email}</span>
+              </Link>
               <button onClick={signOut} title="Sign out"
                 className="text-muted-foreground hover:text-destructive transition">
                 <LogOut className="h-3.5 w-3.5" />
@@ -107,9 +117,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="flex items-center gap-2">
             <span className="led animate-pulse-led" />
             <span className="label-mono">live</span>
-            <span className="ml-auto font-mono text-xs text-muted-foreground">
-              {time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false })}
-            </span>
+            <LiveClock />
           </div>
         </div>
       </aside>
@@ -215,10 +223,12 @@ export function AppShell({ children }: { children: ReactNode }) {
             <div className="p-4 border-t border-border">
               {user && (
                 <div className="flex items-center gap-2 text-xs">
-                  <div className="h-7 w-7 rounded-full bg-surface-2 grid place-items-center font-mono text-[10px] text-muted-foreground shrink-0">
-                    {user.email?.[0]?.toUpperCase() ?? "?"}
-                  </div>
-                  <span className="truncate flex-1 text-muted-foreground">{user.email}</span>
+                  <Link to="/profile" className="flex items-center gap-2 flex-1 min-w-0 hover:text-foreground transition">
+                    <div className="h-7 w-7 rounded-full bg-surface-2 grid place-items-center font-mono text-[10px] text-muted-foreground shrink-0">
+                      {user.email?.[0]?.toUpperCase() ?? "?"}
+                    </div>
+                    <span className="truncate text-muted-foreground">{user.email}</span>
+                  </Link>
                   <button
                     onClick={signOut}
                     title="Sign out"

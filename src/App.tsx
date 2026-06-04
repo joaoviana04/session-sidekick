@@ -20,6 +20,7 @@ const ProjectView = lazy(() => import("./pages/ProjectView.tsx"));
 const Clients = lazy(() => import("./pages/Clients.tsx"));
 const Share = lazy(() => import("./pages/Share.tsx"));
 const Landing = lazy(() => import("./pages/Landing.tsx"));
+const Profile = lazy(() => import("./pages/Profile.tsx"));
 
 import { useAuth } from "@/hooks/useAuth";
 
@@ -69,6 +70,7 @@ const App = () => (
                 <Route path="/session/:id" element={<ProtectedRoute><SessionView /></ProtectedRoute>} />
                 <Route path="/session/:id/show" element={<ProtectedRoute><SessionShowMode /></ProtectedRoute>} />
                 <Route path="/tools" element={<ProtectedRoute><Tools /></ProtectedRoute>} />
+                <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               </Suspense>

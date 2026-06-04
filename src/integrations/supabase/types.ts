@@ -44,23 +44,38 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          bio: string | null
           created_at: string
+          currency: string
           display_name: string | null
+          hourly_rate: number | null
           id: string
+          locale: string | null
+          timezone: string | null
           updated_at: string
         }
         Insert: {
           avatar_url?: string | null
+          bio?: string | null
           created_at?: string
+          currency?: string
           display_name?: string | null
+          hourly_rate?: number | null
           id: string
+          locale?: string | null
+          timezone?: string | null
           updated_at?: string
         }
         Update: {
           avatar_url?: string | null
+          bio?: string | null
           created_at?: string
+          currency?: string
           display_name?: string | null
+          hourly_rate?: number | null
           id?: string
+          locale?: string | null
+          timezone?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -202,6 +217,7 @@ export type Database = {
           checklist: Json
           created_at: string
           foh_console: string | null
+          hourly_rate: number | null
           id: string
           ideas: Json
           inputs: Json
@@ -239,6 +255,7 @@ export type Database = {
           checklist?: Json
           created_at?: string
           foh_console?: string | null
+          hourly_rate?: number | null
           id?: string
           ideas?: Json
           inputs?: Json
@@ -276,6 +293,7 @@ export type Database = {
           checklist?: Json
           created_at?: string
           foh_console?: string | null
+          hourly_rate?: number | null
           id?: string
           ideas?: Json
           inputs?: Json

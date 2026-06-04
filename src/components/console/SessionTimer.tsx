@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { Play, Pause, RotateCcw, History, Trash2 } from "lucide-react";
+import { Play, Pause, RotateCcw, History, Trash2, Wallet } from "lucide-react";
 import { useSession } from "@/lib/store/sessions";
+import { useProfile, formatCurrency } from "@/lib/store/profile";
+import { Link } from "react-router-dom";
 import type { Session, TimeLogEntry } from "@/lib/types";
 import {
   Popover,
@@ -38,6 +40,7 @@ function fmtDateTime(iso: string) {
 
 export function SessionTimer({ session }: { session: Session }) {
   const { update } = useSession(session.id);
+  const { profile } = useProfile();
   const log = session.timeLog ?? [];
   const open = log.find((e) => e.end === null) ?? null;
   const running = !!open;
@@ -62,6 +65,14 @@ export function SessionTimer({ session }: { session: Session }) {
     if (!e.end) current = d;
   }
   const totals = { total, current };
+
+  const rate =
+    session.hourlyRate != null && session.hourlyRate > 0
+      ? session.hourlyRate
+      : profile.hourlyRate ?? 0;
+  const currency = profile.currency || "EUR";
+  const earnings = rate > 0 ? (totals.total / 3_600_000) * rate : 0;
+  const earningsCurrent = rate > 0 ? (totals.current / 3_600_000) * rate : 0;
 
   const setLog = (next: TimeLogEntry[]) =>
     update(session.id, (s) => ({ ...s, timeLog: next }));
@@ -93,6 +104,12 @@ export function SessionTimer({ session }: { session: Session }) {
             this run · {fmtCompact(totals.current)}
           </span>
         )}
+        {rate > 0 && (
+          <span className="font-mono text-[10px] text-accent tabular-nums" title={`@ ${formatCurrency(rate, currency, profile.locale)}/h`}>
+            {formatCurrency(earnings, currency, profile.locale)}
+            {running && earningsCurrent > 0 ? ` · +${formatCurrency(earningsCurrent, currency, profile.locale)}` : ""}
+          </span>
+        )}
       </div>
       <div className="ml-auto flex gap-1">
         <button
@@ -116,6 +133,11 @@ export function SessionTimer({ session }: { session: Session }) {
                 <div className="label-mono mt-0.5">
                   {log.length} sessions · total {fmt(totals.total)}
                 </div>
+                {rate > 0 && (
+                  <div className="label-mono mt-0.5 text-accent">
+                    earned {formatCurrency(earnings, currency, profile.locale)} @ {formatCurrency(rate, currency, profile.locale)}/h
+                  </div>
+                )}
               </div>
               <button
                 onClick={reset}
@@ -125,6 +147,29 @@ export function SessionTimer({ session }: { session: Session }) {
                 <RotateCcw className="h-3.5 w-3.5" />
               </button>
             </div>
+            <div className="px-3 py-2 border-b border-border/60 flex items-center gap-2">
+              <Wallet className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+              <span className="label-mono shrink-0">Rate</span>
+              <input
+                type="number"
+                inputMode="decimal"
+                min={0}
+                step="0.01"
+                value={session.hourlyRate ?? ""}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  update(session.id, { hourlyRate: v === "" ? null : Number(v) });
+                }}
+                placeholder={profile.hourlyRate != null ? String(profile.hourlyRate) : "from profile"}
+                className="flex-1 min-w-0 bg-input border border-border rounded-sm px-2 py-1 text-xs outline-none focus:ring-1 focus:ring-primary font-mono tabular-nums"
+              />
+              <span className="text-[10px] text-muted-foreground font-mono">{currency}/h</span>
+            </div>
+            {profile.hourlyRate == null && session.hourlyRate == null && (
+              <div className="px-3 py-2 border-b border-border/60 text-[11px] text-muted-foreground">
+                Set a default rate on your <Link to="/profile" className="text-accent underline">profile</Link>.
+              </div>
+            )}
             <div className="max-h-72 overflow-auto divide-y divide-border/60">
               {log.length === 0 && (
                 <div className="px-3 py-6 text-center text-xs text-muted-foreground">

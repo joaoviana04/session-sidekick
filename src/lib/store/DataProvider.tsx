@@ -61,6 +61,7 @@ function sessionFromRow(row: any): Session {
     instrumentation: row.instrumentation ?? [],
     mood: row.mood ?? "",
     tempoFeel: row.tempo_feel ?? "",
+    hourlyRate: row.hourly_rate ?? null,
   };
 }
 
@@ -96,6 +97,7 @@ function sessionToRowPatch(patch: Partial<Session>): Record<string, any> {
   if ("instrumentation" in patch) p.instrumentation = patch.instrumentation;
   if ("mood" in patch) p.mood = patch.mood;
   if ("tempoFeel" in patch) p.tempo_feel = patch.tempoFeel;
+  if ("hourlyRate" in patch) p.hourly_rate = patch.hourlyRate;
   return p;
 }
 
