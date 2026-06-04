@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, memo, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Mic, Sliders, Wrench, Radio, Plus, FolderKanban, Users, LogOut, Menu, X, Zap, User2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -13,12 +13,6 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { user, signOut } = useAuth();
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [time, setTime] = useState(() => new Date());
-
-  useEffect(() => {
-    const t = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(t);
-  }, []);
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -110,9 +104,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="flex items-center gap-2">
             <span className="led animate-pulse-led" />
             <span className="label-mono">live</span>
-            <span className="ml-auto font-mono text-xs text-muted-foreground">
-              {time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false })}
-            </span>
+            <LiveClock />
           </div>
         </div>
       </aside>
