@@ -7,6 +7,19 @@ import { NewSessionDialog } from "./NewSessionDialog";
 import { useAuth } from "@/hooks/useAuth";
 import sessionsLogo from "@/assets/sessions-logo.png";
 
+const LiveClock = memo(function LiveClock() {
+  const [time, setTime] = useState(() => new Date());
+  useEffect(() => {
+    const t = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(t);
+  }, []);
+  return (
+    <span className="ml-auto font-mono text-xs text-muted-foreground">
+      {time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false })}
+    </span>
+  );
+});
+
 export function AppShell({ children }: { children: ReactNode }) {
   const location = useLocation();
   const { sessions } = useSessions();
