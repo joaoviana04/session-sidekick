@@ -30,6 +30,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     { to: "/projects", label: "Projects", icon: FolderKanban },
     { to: "/clients", label: "Clients", icon: Users },
     { to: "/tools", label: "Tools", icon: Wrench },
+    { to: "/profile", label: "Profile", icon: User2 },
   ];
 
   return (
@@ -217,10 +218,12 @@ export function AppShell({ children }: { children: ReactNode }) {
             <div className="p-4 border-t border-border">
               {user && (
                 <div className="flex items-center gap-2 text-xs">
-                  <div className="h-7 w-7 rounded-full bg-surface-2 grid place-items-center font-mono text-[10px] text-muted-foreground shrink-0">
-                    {user.email?.[0]?.toUpperCase() ?? "?"}
-                  </div>
-                  <span className="truncate flex-1 text-muted-foreground">{user.email}</span>
+                  <Link to="/profile" className="flex items-center gap-2 flex-1 min-w-0 hover:text-foreground transition">
+                    <div className="h-7 w-7 rounded-full bg-surface-2 grid place-items-center font-mono text-[10px] text-muted-foreground shrink-0">
+                      {user.email?.[0]?.toUpperCase() ?? "?"}
+                    </div>
+                    <span className="truncate text-muted-foreground">{user.email}</span>
+                  </Link>
                   <button
                     onClick={signOut}
                     title="Sign out"
