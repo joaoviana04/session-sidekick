@@ -64,26 +64,24 @@ export function Ideas({ session }: { session: Session }) {
                   ))}
                 </select>
                 <Icon className={`h-3.5 w-3.5 ${meta.color}`} />
-                <input
-                  value={idea.title}
-                  onChange={(e) => setField(idea.id, "title", e.target.value)}
-                  placeholder="Title"
-                  className="flex-1 min-w-0 bg-transparent text-sm font-display font-semibold outline-none focus:bg-input/40 rounded-sm px-1"
-                />
+                <span className="label-mono flex-1 truncate">{new Date(idea.createdAt).toLocaleDateString()}</span>
                 <button onClick={() => setIdeas((arr) => arr.filter((x) => x.id !== idea.id))}
                   className="text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition">
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
               </div>
+              <input
+                value={idea.title}
+                onChange={(e) => setField(idea.id, "title", e.target.value)}
+                placeholder="Title"
+                className="w-full bg-transparent text-base font-display font-semibold outline-none focus:bg-input/40 rounded-sm px-1 mb-1"
+              />
               <textarea
                 value={idea.body}
                 onChange={(e) => setField(idea.id, "body", e.target.value)}
                 placeholder="Describe the idea, hum the melody in words, paste a chord progression…"
                 className="w-full min-h-[80px] bg-transparent text-xs font-mono leading-relaxed outline-none resize-y"
               />
-              <div className="label-mono mt-1">
-                {new Date(idea.createdAt).toLocaleString()}
-              </div>
             </div>
           );
         })}

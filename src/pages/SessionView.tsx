@@ -123,6 +123,7 @@ const SessionView = () => {
           </div>
           <div className="w-full sm:w-auto sm:min-w-[240px] flex flex-col gap-2">
             <SessionTimer session={session} />
+            <TapTempo />
             <button
               onClick={() => exportSessionPdf(session, project, client)}
               className="flex items-center justify-center gap-1.5 text-xs px-2.5 py-1.5 rounded-sm bg-surface-2 hover:bg-surface-3 transition"
@@ -183,18 +184,16 @@ const SessionView = () => {
           <div className="grid lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
               <InputList session={session} />
-              <TakeLog session={session} />
+              <Notes session={session} />
             </div>
             <div className="space-y-6">
-              <Notes session={session} />
-              <TapTempo />
+              <TakeLog session={session} />
             </div>
           </div>
         ) : session.type === "mix" ? (
           <div className="grid lg:grid-cols-3 gap-6">
             <div className="space-y-6">
               <MixChecklist session={session} />
-              <TapTempo />
             </div>
             <div className="lg:col-span-2 space-y-6">
               <Revisions session={session} />
@@ -205,15 +204,14 @@ const SessionView = () => {
         ) : session.type === "compose" ? (
           <div className="grid lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
+              <Ideas session={session} />
               <Lyrics session={session} />
               <SongStructure session={session} />
-              <Ideas session={session} />
             </div>
             <div className="space-y-6">
               <Instrumentation session={session} />
               <References session={session} />
               <Notes session={session} />
-              <TapTempo />
             </div>
           </div>
         ) : (
@@ -227,7 +225,6 @@ const SessionView = () => {
               <MixChecklist session={session} />
               <MonitorMixes session={session} />
               <Notes session={session} />
-              <TapTempo />
             </div>
           </div>
         )}

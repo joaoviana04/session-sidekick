@@ -1,6 +1,6 @@
 import { ReactNode, memo, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Mic, Sliders, Wrench, Radio, Plus, FolderKanban, Users, LogOut, Menu, X, Zap, User2 } from "lucide-react";
+import { Mic, Sliders, Wrench, Radio, Plus, FolderKanban, Users, LogOut, Menu, X, Zap, User2, PenLine } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSessions } from "@/lib/store/sessions";
 import { NewSessionDialog } from "./NewSessionDialog";
@@ -79,8 +79,16 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="label-mono px-2 mb-2">Recent</div>
           <div className="space-y-1 max-h-[40vh] overflow-auto pr-1">
             {sessions.slice(0, 12).map((s) => {
-              const Icon = s.type === "recording" ? Mic : s.type === "mix" ? Sliders : Zap;
-              const accent = s.type === "recording" ? "text-info" : s.type === "mix" ? "text-primary" : "text-success";
+              const Icon =
+                s.type === "recording" ? Mic
+                : s.type === "mix" ? Sliders
+                : s.type === "compose" ? PenLine
+                : Zap;
+              const accent =
+                s.type === "recording" ? "text-info"
+                : s.type === "mix" ? "text-primary"
+                : s.type === "compose" ? "text-accent"
+                : "text-success";
               const active = location.pathname === `/session/${s.id}`;
               return (
                 <Link key={s.id} to={`/session/${s.id}`}
@@ -197,8 +205,16 @@ export function AppShell({ children }: { children: ReactNode }) {
               <div className="label-mono px-2 mb-2">Recent</div>
               <div className="space-y-1 overflow-auto pr-1 flex-1">
                 {sessions.slice(0, 20).map((s) => {
-                  const Icon = s.type === "recording" ? Mic : s.type === "mix" ? Sliders : Zap;
-                  const accent = s.type === "recording" ? "text-info" : s.type === "mix" ? "text-primary" : "text-success";
+                  const Icon =
+                    s.type === "recording" ? Mic
+                    : s.type === "mix" ? Sliders
+                    : s.type === "compose" ? PenLine
+                    : Zap;
+                  const accent =
+                    s.type === "recording" ? "text-info"
+                    : s.type === "mix" ? "text-primary"
+                    : s.type === "compose" ? "text-accent"
+                    : "text-success";
                   const active = location.pathname === `/session/${s.id}`;
                   return (
                     <Link
