@@ -60,20 +60,6 @@ const Index = () => {
               A tactile companion for the control room — inputs, takes, checklists, revisions.
             </p>
           </div>
-          <div className="hidden md:flex items-stretch divide-x divide-border/60 border border-border/60 rounded-md bg-surface-1/30">
-            {([
-              ["Total", sessions.length],
-              ["Recording", recCount],
-              ["Mix", mixCount],
-              ["Compose", composeCount],
-              ["Live", liveCount],
-            ] as const).map(([l, v]) => (
-              <div key={l} className="px-4 py-3 min-w-[72px] text-center">
-                <div className="font-display text-2xl tabular-nums leading-none">{v}</div>
-                <div className="label-mono mt-1.5">{l}</div>
-              </div>
-            ))}
-          </div>
         </header>
 
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-border/60 pb-4">
@@ -216,7 +202,12 @@ function SessionCard({ session: s, onDelete }: { session: any; onDelete: () => v
             <span className={cn("h-1.5 w-1.5 rounded-full", meta.dot)} />
             <span className="label-mono">{meta.label}</span>
           </div>
-          <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:text-primary transition" />
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-[10px] text-muted-foreground tabular-nums">
+              {new Date(s.createdAt).toLocaleDateString()}
+            </span>
+            <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:text-primary transition" />
+          </div>
         </div>
         <div className="flex items-start gap-3 mb-6">
           <div className={cn("h-9 w-9 rounded-sm bg-surface-2/60 grid place-items-center shrink-0 transition-colors", meta.accent)}>
@@ -227,18 +218,13 @@ function SessionCard({ session: s, onDelete }: { session: any; onDelete: () => v
             <div className="text-xs text-muted-foreground truncate mt-0.5">{s.artist || "—"}</div>
           </div>
         </div>
-        <div className="flex items-end justify-between border-t border-border/40 pt-3">
-          <div className="flex gap-5">
-            {metrics.map((m) => (
-              <div key={m.label}>
-                <div className="font-mono text-sm tabular-nums">{m.value}</div>
-                <div className="label-mono mt-0.5">{m.label}</div>
-              </div>
-            ))}
-          </div>
-          <div className="font-mono text-[10px] text-muted-foreground tabular-nums">
-            {new Date(s.createdAt).toLocaleDateString()}
-          </div>
+        <div className="flex gap-5 border-t border-border/40 pt-3">
+          {metrics.map((m) => (
+            <div key={m.label}>
+              <div className="font-mono text-sm tabular-nums">{m.value}</div>
+              <div className="label-mono mt-0.5">{m.label}</div>
+            </div>
+          ))}
         </div>
       </Link>
       <button
