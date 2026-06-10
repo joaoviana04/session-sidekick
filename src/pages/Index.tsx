@@ -60,20 +60,6 @@ const Index = () => {
               A tactile companion for the control room — inputs, takes, checklists, revisions.
             </p>
           </div>
-          <div className="hidden md:flex items-stretch divide-x divide-border/60 border border-border/60 rounded-md bg-surface-1/30">
-            {([
-              ["Total", sessions.length],
-              ["Recording", recCount],
-              ["Mix", mixCount],
-              ["Compose", composeCount],
-              ["Live", liveCount],
-            ] as const).map(([l, v]) => (
-              <div key={l} className="px-4 py-3 min-w-[72px] text-center">
-                <div className="font-display text-2xl tabular-nums leading-none">{v}</div>
-                <div className="label-mono mt-1.5">{l}</div>
-              </div>
-            ))}
-          </div>
         </header>
 
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-border/60 pb-4">
