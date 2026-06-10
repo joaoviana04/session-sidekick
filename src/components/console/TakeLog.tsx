@@ -47,11 +47,11 @@ export function TakeLog({ session }: { session: Session }) {
         </button>
       </div>
 
-      <div className="max-h-[460px] overflow-auto divide-y divide-border/60">
+      <div className="max-h-[640px] overflow-auto divide-y divide-border/60">
         {takes.map((t) => {
           const r = ratingMap[t.rating];
           return (
-            <div key={t.id} className="px-4 py-2.5 hover:bg-surface-2/50 group animate-fade-in">
+            <div key={t.id} className="px-4 py-3 hover:bg-surface-2/40 group animate-fade-in">
               <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
                 <span className="font-mono text-xs text-muted-foreground tabular-nums shrink-0">
                   {new Date(t.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })}
@@ -77,11 +77,15 @@ export function TakeLog({ session }: { session: Session }) {
                     {ratingMap[rt].label}
                   </button>
                 ))}
-                <input value={t.notes} onChange={(e) =>
-                  setTakes((arr) => arr.map((x) => x.id === t.id ? { ...x, notes: e.target.value } : x))}
-                  placeholder="Notes…"
-                  className="flex-1 min-w-[120px] ml-2 bg-transparent text-xs px-2 py-1 rounded-sm hover:bg-surface-2 focus:bg-surface-2 outline-none focus:ring-1 focus:ring-primary" />
               </div>
+              <textarea
+                value={t.notes}
+                onChange={(e) =>
+                  setTakes((arr) => arr.map((x) => x.id === t.id ? { ...x, notes: e.target.value } : x))}
+                placeholder="Take notes — performance, tuning, vibe…"
+                rows={2}
+                className="mt-2 w-full bg-surface-2/40 hover:bg-surface-2/70 focus:bg-surface-2 text-xs px-2.5 py-2 rounded-sm outline-none focus:ring-1 focus:ring-primary resize-y font-mono leading-relaxed"
+              />
             </div>
           );
         })}
