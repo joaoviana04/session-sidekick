@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import sessionsLogo from "@/assets/sessions-logo.png";
+import { Logo } from "@/components/Logo";
 
 const Auth = () => {
   const { user, loading } = useAuth();
@@ -49,7 +49,7 @@ const Auth = () => {
     <div className="min-h-screen grid place-items-center px-6 py-10">
       <div className="w-full max-w-sm">
         <div className="flex items-center gap-3 mb-8">
-          <img src={sessionsLogo} alt="Sessions" width={40} height={40} className="h-10 w-10" />
+          <Logo className="h-10 w-10" />
           <div>
             <div className="font-display font-bold text-xl leading-none">Sessions</div>
             <div className="label-mono mt-1">studio companion</div>

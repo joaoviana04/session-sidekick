@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { useSessions } from "@/lib/store/sessions";
 import { NewSessionDialog } from "./NewSessionDialog";
 import { useAuth } from "@/hooks/useAuth";
-import sessionsLogo from "@/assets/sessions-logo.png";
+import { Logo } from "@/components/Logo";
 
 const LiveClock = memo(function LiveClock() {
   const [time, setTime] = useState(() => new Date());
@@ -45,7 +45,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* Sidebar */}
       <aside className="hidden md:flex w-64 shrink-0 flex-col border-r border-border bg-surface-1">
         <div className="px-5 py-5 border-b border-border flex items-center gap-3">
-          <img src={sessionsLogo} alt="Sessions" width={32} height={32} className="h-8 w-8" />
+          <Logo className="h-8 w-8" />
           <div>
             <div className="font-display font-semibold leading-none">Sessions</div>
             <div className="label-mono mt-1">studio companion</div>
@@ -139,7 +139,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         >
           <Menu className="h-5 w-5" />
         </button>
-        <img src={sessionsLogo} alt="Sessions" width={28} height={28} className="h-7 w-7" />
+        <Logo className="h-7 w-7" />
         <span className="font-display font-semibold">Sessions</span>
         <button
           onClick={() => setOpen(true)}
@@ -159,7 +159,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           />
           <aside className="relative w-72 max-w-[85vw] bg-surface-1 border-r border-border flex flex-col animate-fade-in">
             <div className="px-5 py-4 border-b border-border flex items-center gap-3">
-              <img src={sessionsLogo} alt="Sessions" width={32} height={32} className="h-8 w-8" />
+              <Logo className="h-8 w-8" />
               <div className="flex-1">
                 <div className="font-display font-semibold leading-none">Sessions</div>
                 <div className="label-mono mt-1">studio companion</div>

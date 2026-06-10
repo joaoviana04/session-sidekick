@@ -4,7 +4,7 @@ import { CheckCircle2, RefreshCw, Loader2, Mic, Sliders, Zap } from "lucide-reac
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import sessionsLogo from "@/assets/sessions-logo.png";
+import { Logo } from "@/components/Logo";
 import type { Revision } from "@/lib/types";
 
 type Decision = "pending" | "approved" | "revise";
@@ -129,7 +129,7 @@ const Share = () => {
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-surface-1">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-3">
-          <img src={sessionsLogo} alt="Sessions" width={32} height={32} className="h-8 w-8" />
+          <Logo className="h-8 w-8" />
           <div className="font-display font-semibold">Sessions</div>
           <div className="ml-auto label-mono">client review</div>
         </div>
