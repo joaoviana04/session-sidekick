@@ -1,7 +1,7 @@
 import { Link, Navigate } from "react-router-dom";
 import { Mic, Sliders, Zap, Headphones, Workflow, Clock, FileDown, Share2, ArrowRight } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import sessionsLogo from "@/assets/sessions-logo.png";
+import { Logo } from "@/components/Logo";
 
 const FEATURES = [
   { Icon: Mic, title: "Tracking sessions", body: "Input lists, take logs, signal-flow visualizer and session notes — built for the control room." },
@@ -21,7 +21,7 @@ const Landing = () => {
       {/* Nav */}
       <header className="px-6 sm:px-10 py-5 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <img src={sessionsLogo} alt="Sessions" width={32} height={32} className="h-8 w-8" />
+          <Logo className="h-8 w-8" />
           <div className="font-display font-bold tracking-tight">Sessions</div>
         </div>
         <div className="flex items-center gap-2">
