@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AudioWaveform } from "lucide-react";
 
 const data: { source: string; cut?: string; boost?: string; tip: string }[] = [
   { source: "Kick", boost: "60-100 Hz (thump), 2-5 kHz (beater)", cut: "200-400 Hz (mud)", tip: "Side-chain bass to kick for punch." },
@@ -18,13 +19,16 @@ export function FrequencyGuide() {
   const filtered = data.filter((d) => d.source.toLowerCase().includes(q.toLowerCase()));
   return (
     <div className="panel">
-      <div className="px-4 py-3 border-b border-border flex items-center justify-between gap-4">
-        <div>
-          <div className="font-display font-semibold">Frequency Cheat Sheet</div>
-          <div className="label-mono mt-0.5">Starting points - trust your ears</div>
+      <div className="panel-header">
+        <div className="panel-icon">
+          <AudioWaveform className="h-4 w-4" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="panel-title">Frequency Cheat Sheet</div>
+          <div className="panel-subtitle">Starting points - trust your ears</div>
         </div>
         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter"
-          className="bg-input border border-border rounded-sm px-3 py-1.5 text-sm w-40 outline-none focus:ring-1 focus:ring-primary" />
+          className="bg-input border border-border rounded-lg px-3 py-1.5 text-sm w-32 sm:w-40 outline-none focus:ring-1 focus:ring-primary shrink-0" />
       </div>
       <div className="divide-y divide-border/60 max-h-[500px] overflow-auto">
         {filtered.map((d) => (

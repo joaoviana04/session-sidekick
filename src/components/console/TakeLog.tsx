@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Star, Trash2, Check, X } from "lucide-react";
+import { Plus, Star, Trash2, Check, X, ListMusic } from "lucide-react";
 import { useSession, helpers } from "@/lib/store/sessions";
 import type { Session, TakeRating } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -29,9 +29,14 @@ export function TakeLog({ session }: { session: Session }) {
 
   return (
     <div className="panel">
-      <div className="px-4 py-3 border-b border-border">
-        <div className="font-display font-semibold">Take Log</div>
-        <div className="label-mono mt-0.5">{takes.length} takes · {takes.filter(t => t.rating === "keeper").length} keepers</div>
+      <div className="panel-header">
+        <div className="panel-icon">
+          <ListMusic className="h-4 w-4" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="panel-title">Take Log</div>
+          <div className="panel-subtitle">{takes.length} takes · {takes.filter(t => t.rating === "keeper").length} keepers</div>
+        </div>
       </div>
 
       <div className="p-3 border-b border-border flex flex-wrap gap-2">

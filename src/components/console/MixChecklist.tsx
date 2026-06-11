@@ -1,4 +1,4 @@
-import { Plus, Check, Trash2, Sparkles } from "lucide-react";
+import { Plus, Check, Trash2, Sparkles, ListChecks } from "lucide-react";
 import { useState } from "react";
 import { useSession, helpers } from "@/lib/store/sessions";
 import type { Session } from "@/lib/types";
@@ -40,44 +40,42 @@ export function MixChecklist({ session }: { session: Session }) {
 
   return (
     <div className="panel">
-      <div className="px-4 py-3 border-b border-border">
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="font-display font-semibold">
-              {session.type === "live" ? "Soundcheck Checklist" : "Mix Checklist"}
-            </div>
-            <div className="label-mono mt-0.5">{done}/{items.length} complete</div>
-          </div>
-          <div className="flex items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-sm bg-surface-2 hover:bg-surface-3 transition">
-                <Sparkles className="h-3.5 w-3.5" /> Presets
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-64">
-                <DropdownMenuLabel>Replace with preset</DropdownMenuLabel>
-                {presets.map((p) => (
-                  <DropdownMenuItem key={p.id} onClick={() => applyPreset(p.id, "replace")}>
-                    <div>
-                      <div className="text-sm">{p.label}</div>
-                      <div className="text-xs text-muted-foreground">{p.description}</div>
-                    </div>
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuSeparator />
-                <DropdownMenuLabel>Append preset</DropdownMenuLabel>
-                {presets.map((p) => (
-                  <DropdownMenuItem key={`a-${p.id}`} onClick={() => applyPreset(p.id, "append")}>
-                    <div className="text-sm">+ {p.label}</div>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <div className="font-mono text-2xl text-primary tabular-nums">{pct}%</div>
-          </div>
+      <div className="panel-header">
+        <div className="panel-icon">
+          <ListChecks className="h-4 w-4" />
         </div>
-        <div className="mt-3 h-1 bg-surface-3 rounded-full overflow-hidden">
-          <div className="h-full bg-gradient-amber transition-all" style={{ width: `${pct}%` }} />
+        <div className="min-w-0 flex-1">
+          <div className="panel-title">
+            {session.type === "live" ? "Soundcheck" : "Mix Checklist"}
+          </div>
+          <div className="panel-subtitle">{done}/{items.length} complete · {pct}%</div>
         </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg bg-surface-2 hover:bg-surface-3 transition shrink-0">
+            <Sparkles className="h-3.5 w-3.5" /> <span className="hidden sm:inline">Presets</span>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-64">
+            <DropdownMenuLabel>Replace with preset</DropdownMenuLabel>
+            {presets.map((p) => (
+              <DropdownMenuItem key={p.id} onClick={() => applyPreset(p.id, "replace")}>
+                <div>
+                  <div className="text-sm">{p.label}</div>
+                  <div className="text-xs text-muted-foreground">{p.description}</div>
+                </div>
+              </DropdownMenuItem>
+            ))}
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel>Append preset</DropdownMenuLabel>
+            {presets.map((p) => (
+              <DropdownMenuItem key={`a-${p.id}`} onClick={() => applyPreset(p.id, "append")}>
+                <div className="text-sm">+ {p.label}</div>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+      <div className="h-1 bg-surface-3 overflow-hidden">
+        <div className="h-full bg-gradient-amber transition-all" style={{ width: `${pct}%` }} />
       </div>
 
       <div className="p-3 space-y-4 max-h-[600px] overflow-auto">

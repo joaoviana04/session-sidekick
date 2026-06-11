@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Mic, Sliders, Zap, Download, FolderOpen, User, Wand2, Maximize2, PenLine } from "lucide-react";
+import { ArrowLeft, Mic, Sliders, Zap, Download, FolderOpen, User, Wand2, Maximize2, PenLine, Info } from "lucide-react";
 import { AppShell } from "@/components/console/AppShell";
 import { useSessions } from "@/lib/store/sessions";
 import { useProjects } from "@/lib/store/projects";
@@ -108,51 +108,30 @@ const SessionView = () => {
           <ArrowLeft className="h-3.5 w-3.5" /> Sessions
         </Link>
 
-        <header className="flex flex-wrap items-start gap-4 mb-6">
-          <div className={`h-12 w-12 rounded-sm bg-surface-2 grid place-items-center ${accent}`}>
-            <Icon className="h-5 w-5" />
-          </div>
-          <div className="min-w-0 flex-1 space-y-3">
-            <div>
-              <div className="label-mono">{typeLabel}</div>
+        <div className="panel mb-6">
+          <div className="p-5 sm:p-6 flex flex-wrap items-start gap-5">
+            <div className={`h-12 w-12 rounded-xl bg-surface-2 grid place-items-center shrink-0 ${accent}`}>
+              <Icon className="h-5 w-5" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="label-mono mb-1.5">{typeLabel}</div>
               <input value={session.title}
                 onChange={(e) => update(session.id, { title: e.target.value })}
-                className="font-display text-2xl md:text-3xl font-bold bg-transparent outline-none focus:bg-surface-2 rounded-sm px-1 -ml-1 w-full" />
+                className="font-display text-2xl md:text-3xl font-bold bg-transparent outline-none focus:bg-surface-2 rounded-lg px-1.5 -ml-1.5 w-full" />
               <input value={session.artist}
                 onChange={(e) => update(session.id, { artist: e.target.value })}
-                className="block text-base md:text-sm text-muted-foreground bg-transparent outline-none focus:bg-surface-2 rounded-sm px-1 -ml-1 mt-1 w-full" />
+                placeholder="Artist / project name"
+                className="block text-sm text-muted-foreground bg-transparent outline-none focus:bg-surface-2 rounded-lg px-1.5 -ml-1.5 mt-1 w-full" />
             </div>
-            <div className="panel p-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <label className="flex items-center gap-2 min-w-0">
-                <FolderOpen className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                <span className="label-mono shrink-0">Project</span>
-                <select
-                  value={session.projectId ?? ""}
-                  onChange={(e) => update(session.id, { projectId: e.target.value || null })}
-                  className="flex-1 min-w-0 bg-input border border-border rounded-sm px-2 py-1 text-xs outline-none focus:ring-1 focus:ring-primary"
-                >
-                  <option value="">— No project —</option>
-                  {projects.map((p) => (
-                    <option key={p.id} value={p.id}>{p.name}</option>
-                  ))}
-                </select>
-              </label>
-              <div className="flex items-center gap-2 min-w-0">
-                <User className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                <span className="label-mono shrink-0">Client</span>
-                <div className="flex-1 min-w-0 text-xs font-mono px-2 py-1 truncate text-muted-foreground">
-                  {client ? client.name : project ? "— project has no client —" : "— assign a project first —"}
-                </div>
-              </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <SessionTimer session={session} />
+              <TapTempo />
             </div>
-            <SessionMeta session={session} />
           </div>
-          <div className="w-full sm:w-auto sm:min-w-[240px] flex flex-col gap-2">
-            <SessionTimer session={session} />
-            <TapTempo />
+          <div className="px-5 sm:px-6 pb-5 sm:pb-6 flex flex-wrap gap-2">
             <button
               onClick={() => exportSessionPdf(session, project, client)}
-              className="flex items-center justify-center gap-1.5 text-xs px-2.5 py-1.5 rounded-sm bg-surface-2 hover:bg-surface-3 transition"
+              className="inline-flex items-center justify-center gap-1.5 text-xs font-medium px-3 py-2 rounded-lg bg-surface-2 hover:bg-surface-3 transition"
               title="Export session as PDF"
             >
               <Download className="h-3.5 w-3.5" /> Export PDF
@@ -160,7 +139,7 @@ const SessionView = () => {
             {session.type === "recording" && (
               <button
                 onClick={startMixFromRecording}
-                className="flex items-center justify-center gap-1.5 text-xs px-2.5 py-1.5 rounded-sm bg-gradient-amber text-primary-foreground hover:opacity-90 transition"
+                className="inline-flex items-center justify-center gap-1.5 text-xs font-medium px-3 py-2 rounded-lg bg-gradient-amber text-primary-foreground hover:opacity-90 transition shadow-led"
                 title="Create a new mix session seeded from this recording"
               >
                 <Wand2 className="h-3.5 w-3.5" /> Start mix from this
@@ -169,16 +148,52 @@ const SessionView = () => {
             {session.type === "live" && (
               <Link
                 to={`/session/${session.id}/show`}
-                className="flex items-center justify-center gap-1.5 text-xs px-2.5 py-1.5 rounded-sm bg-gradient-amber text-primary-foreground hover:opacity-90 transition"
+                className="inline-flex items-center justify-center gap-1.5 text-xs font-medium px-3 py-2 rounded-lg bg-gradient-amber text-primary-foreground hover:opacity-90 transition shadow-led"
                 title="Fullscreen Show Mode for FOH"
               >
                 <Maximize2 className="h-3.5 w-3.5" /> Show Mode
               </Link>
             )}
           </div>
-        </header>
+        </div>
 
-        <div className="mb-6" />
+        <div className="panel mb-6">
+          <div className="panel-header">
+            <div className="panel-icon">
+              <Info className="h-4 w-4" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="panel-title">Session details</div>
+              <div className="panel-subtitle">Project, client &amp; format</div>
+            </div>
+          </div>
+          <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <label className="block">
+              <div className="label-mono mb-1 flex items-center gap-1.5">
+                <FolderOpen className="h-3 w-3" /> Project
+              </div>
+              <select
+                value={session.projectId ?? ""}
+                onChange={(e) => update(session.id, { projectId: e.target.value || null })}
+                className="w-full bg-input border border-border rounded-sm px-2 py-1.5 text-sm outline-none focus:ring-1 focus:ring-primary font-mono"
+              >
+                <option value="">— No project —</option>
+                {projects.map((p) => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+            </label>
+            <label className="block">
+              <div className="label-mono mb-1 flex items-center gap-1.5">
+                <User className="h-3 w-3" /> Client
+              </div>
+              <div className="w-full bg-input/60 border border-transparent rounded-sm px-2 py-1.5 text-sm font-mono truncate text-muted-foreground">
+                {client ? client.name : project ? "— project has no client —" : "— assign a project first —"}
+              </div>
+            </label>
+            <SessionMeta session={session} />
+          </div>
+        </div>
 
         {session.type === "recording" ? (
           <div className="grid lg:grid-cols-3 gap-6">

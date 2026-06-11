@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { FileText } from "lucide-react";
 import { useSession } from "@/lib/store/sessions";
 import type { Session } from "@/lib/types";
 
@@ -13,9 +14,14 @@ export function Notes({ session }: { session: Session }) {
   }, [flush, session.id]);
   return (
     <div className="panel">
-      <div className="px-4 py-3 border-b border-border">
-        <div className="font-display font-semibold">Session Notes</div>
-        <div className="label-mono mt-0.5">Markdown-ish - auto-saved</div>
+      <div className="panel-header">
+        <div className="panel-icon">
+          <FileText className="h-4 w-4" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="panel-title">Session Notes</div>
+          <div className="panel-subtitle">Markdown-ish · auto-saved</div>
+        </div>
       </div>
       <textarea
         value={session.notes}

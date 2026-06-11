@@ -29,17 +29,20 @@ export function Ideas({ session }: { session: Session }) {
 
   return (
     <div className="panel">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-        <div>
-          <div className="font-display font-semibold">Ideas</div>
-          <div className="label-mono mt-0.5">{ideas.length} cards · capture before you forget</div>
+      <div className="panel-header">
+        <div className="panel-icon">
+          <Lightbulb className="h-4 w-4" />
         </div>
-        <div className="flex items-center gap-1">
+        <div className="min-w-0 flex-1">
+          <div className="panel-title">Ideas</div>
+          <div className="panel-subtitle">{ideas.length} cards · capture before you forget</div>
+        </div>
+        <div className="flex items-center gap-1 shrink-0">
           {(Object.keys(KIND_META) as IdeaKind[]).map((k) => {
             const Icon = KIND_META[k].icon;
             return (
               <button key={k} onClick={() => add(k)} title={`New ${KIND_META[k].label}`}
-                className={`p-1.5 rounded-sm bg-surface-2 hover:bg-surface-3 transition ${KIND_META[k].color}`}>
+                className={`p-1.5 rounded-lg bg-surface-2 hover:bg-surface-3 transition ${KIND_META[k].color}`}>
                 <Icon className="h-3.5 w-3.5" />
               </button>
             );

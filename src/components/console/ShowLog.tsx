@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Trash2, AlertTriangle, Info, AlertOctagon } from "lucide-react";
+import { Plus, Trash2, AlertTriangle, Info, AlertOctagon, ClipboardList } from "lucide-react";
 import { useSession, helpers } from "@/lib/store/sessions";
 import type { Session, ShowLogEntry } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -30,9 +30,14 @@ export function ShowLog({ session }: { session: Session }) {
 
   return (
     <div className="panel">
-      <div className="px-4 py-3 border-b border-border">
-        <div className="font-display font-semibold">Show Log</div>
-        <div className="label-mono mt-0.5">{log.length} entries · timestamped</div>
+      <div className="panel-header">
+        <div className="panel-icon">
+          <ClipboardList className="h-4 w-4" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="panel-title">Show Log</div>
+          <div className="panel-subtitle">{log.length} entries · timestamped</div>
+        </div>
       </div>
 
       <div className="p-3 space-y-2 border-b border-border">
