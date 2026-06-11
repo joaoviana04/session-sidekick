@@ -148,9 +148,9 @@ const SessionView = () => {
                 placeholder="Artist / project name"
                 className="block text-sm text-muted-foreground bg-transparent outline-none focus:bg-surface-2 rounded-lg px-1.5 -ml-1.5 mt-1 w-full" />
             </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <SessionTimer session={session} />
+            <div className="flex flex-col items-center gap-2">
               <TapTempo />
+              <SessionTimer session={session} />
             </div>
           </div>
           <div className="px-5 sm:px-6 pb-5 sm:pb-6 flex flex-wrap gap-2">
