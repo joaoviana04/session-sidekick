@@ -3,6 +3,7 @@ import { Plus, Star, Trash2, Check, X, ListMusic } from "lucide-react";
 import { useSession, helpers } from "@/lib/store/sessions";
 import type { Session, TakeRating } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { AudioAttachment } from "@/components/console/AudioAttachment";
 
 const ratingMap: Record<TakeRating, { label: string; cls: string; Icon: typeof Star }> = {
   keeper: { label: "Keeper", cls: "bg-success/20 text-success border-success/30", Icon: Star },
@@ -91,6 +92,13 @@ export function TakeLog({ session }: { session: Session }) {
                 rows={2}
                 className="mt-2 w-full bg-surface-2/40 hover:bg-surface-2/70 focus:bg-surface-2 text-xs px-2.5 py-2 rounded-sm outline-none focus:ring-1 focus:ring-primary resize-y font-mono leading-relaxed"
               />
+              <div className="mt-2">
+                <AudioAttachment
+                  fileUrl={t.fileUrl}
+                  fileName={t.fileName}
+                  onChange={(next) => setTakes((arr) => arr.map((x) => x.id === t.id ? { ...x, ...next } : x))}
+                />
+              </div>
             </div>
           );
         })}

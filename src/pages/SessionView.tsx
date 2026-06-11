@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Mic, Sliders, Zap, Download, FolderOpen, User, Wand2, Maximize2, PenLine, Info } from "lucide-react";
+import { ArrowLeft, Mic, Sliders, Zap, Download, FolderOpen, User, Wand2, Maximize2, PenLine, Info, FileStack } from "lucide-react";
 import { AppShell } from "@/components/console/AppShell";
 import { useSessions } from "@/lib/store/sessions";
 import { useProjects } from "@/lib/store/projects";
@@ -22,6 +22,11 @@ import { Ideas } from "@/components/console/Ideas";
 import { Instrumentation } from "@/components/console/Instrumentation";
 import { exportSessionPdf } from "@/lib/exportPdf";
 import { toast } from "@/hooks/use-toast";
+import { useSessionTemplates, pickTemplateData } from "@/lib/store/templates";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const SessionView = () => {
   const { id } = useParams<{ id: string }>();
@@ -30,6 +35,10 @@ const SessionView = () => {
   const { projects } = useProjects();
   const { clients } = useClients();
   const session = sessions.find((s) => s.id === id);
+  const { create: createTemplate } = useSessionTemplates();
+  const [templateDialogOpen, setTemplateDialogOpen] = useState(false);
+  const [templateName, setTemplateName] = useState("");
+  const [savingTemplate, setSavingTemplate] = useState(false);
 
   if (!session) {
     return (
@@ -101,6 +110,22 @@ const SessionView = () => {
     }
   };
 
+  const saveTemplate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (savingTemplate) return;
+    setSavingTemplate(true);
+    try {
+      await createTemplate(session.type, templateName.trim() || session.title || "Untitled template", pickTemplateData(session));
+      toast({ title: "Template saved", description: "Use it next time you start a new session." });
+      setTemplateDialogOpen(false);
+      setTemplateName("");
+    } catch (err: any) {
+      toast({ title: "Could not save template", description: err?.message ?? "Try again.", variant: "destructive" });
+    } finally {
+      setSavingTemplate(false);
+    }
+  };
+
   return (
     <AppShell>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-8">
@@ -135,6 +160,13 @@ const SessionView = () => {
               title="Export session as PDF"
             >
               <Download className="h-3.5 w-3.5" /> Export PDF
+            </button>
+            <button
+              onClick={() => { setTemplateName(session.title || ""); setTemplateDialogOpen(true); }}
+              className="inline-flex items-center justify-center gap-1.5 text-xs font-medium px-3 py-2 rounded-lg bg-surface-2 hover:bg-surface-3 transition"
+              title="Save this session's setup as a reusable template"
+            >
+              <FileStack className="h-3.5 w-3.5" /> Save as template
             </button>
             {session.type === "recording" && (
               <button
@@ -244,6 +276,28 @@ const SessionView = () => {
           </div>
         )}
       </div>
+
+      <Dialog open={templateDialogOpen} onOpenChange={setTemplateDialogOpen}>
+        <DialogContent className="bg-surface-1 border-border">
+          <DialogHeader>
+            <DialogTitle className="font-display">Save as template</DialogTitle>
+            <DialogDescription>
+              Stores this session's setup (inputs, checklist, monitor mixes, setlist, structure, targets, etc.) so you can reuse it for new {session.type} sessions.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={saveTemplate} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="template-name" className="label-mono">Template name</Label>
+              <Input id="template-name" value={templateName} onChange={(e) => setTemplateName(e.target.value)}
+                placeholder="e.g. Standard drum tracking setup" className="bg-input border-border" autoFocus required />
+            </div>
+            <button type="submit" disabled={savingTemplate}
+              className="w-full rounded-sm bg-gradient-amber text-primary-foreground py-2.5 font-semibold hover:opacity-90 transition disabled:opacity-50">
+              {savingTemplate ? "Saving..." : "Save template"}
+            </button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </AppShell>
   );
 };

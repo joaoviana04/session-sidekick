@@ -23,6 +23,8 @@ export interface Take {
   timestamp: string; // ISO
   rating: TakeRating;
   notes: string;
+  fileUrl?: string;
+  fileName?: string;
 }
 
 export interface ChecklistItem {
@@ -38,6 +40,8 @@ export interface ReferenceTrack {
   artist: string;
   lufs: string;
   notes: string;
+  fileUrl?: string;
+  fileName?: string;
 }
 
 export type RevisionStatus = "draft" | "sent" | "approved" | "revise";
@@ -182,5 +186,38 @@ export interface Project {
   notes: string;
   color: string;
   clientId: string | null;
+  createdAt: string;
+}
+
+// ===== Invoicing =====
+export type InvoiceStatus = "draft" | "sent" | "paid" | "overdue";
+
+export interface InvoiceItem {
+  id: string;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+}
+
+export interface Invoice {
+  id: string;
+  clientId: string | null;
+  projectId: string | null;
+  number: string;
+  status: InvoiceStatus;
+  issueDate: string; // YYYY-MM-DD
+  dueDate: string | null; // YYYY-MM-DD
+  currency: string;
+  items: InvoiceItem[];
+  notes: string;
+  createdAt: string;
+}
+
+// ===== Session templates =====
+export interface SessionTemplate {
+  id: string;
+  type: SessionType;
+  name: string;
+  data: Partial<Session>;
   createdAt: string;
 }

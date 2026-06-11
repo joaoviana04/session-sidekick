@@ -1,6 +1,6 @@
 import { ReactNode, memo, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Mic, Sliders, Wrench, Radio, Plus, FolderKanban, Users, LogOut, Menu, X, Zap, User2, PenLine } from "lucide-react";
+import { Mic, Sliders, Wrench, Radio, Plus, FolderKanban, Users, LogOut, Menu, X, Zap, User2, PenLine, Receipt, CalendarDays } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSessions } from "@/lib/store/sessions";
 import { NewSessionDialog } from "./NewSessionDialog";
@@ -103,6 +103,8 @@ export function AppShell({ children }: { children: ReactNode }) {
     { to: "/", label: "Sessions", icon: Radio },
     { to: "/projects", label: "Projects", icon: FolderKanban },
     { to: "/clients", label: "Clients", icon: Users },
+    { to: "/invoices", label: "Invoices", icon: Receipt },
+    { to: "/calendar", label: "Calendar", icon: CalendarDays },
     { to: "/tools", label: "Tools", icon: Wrench },
     { to: "/profile", label: "Profile", icon: User2 },
   ];

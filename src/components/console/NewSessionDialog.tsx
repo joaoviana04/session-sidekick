@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Mic, Sliders, Radio, PenLine } from "lucide-react";
+import { Mic, Sliders, Radio, PenLine, FileStack } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSessions } from "@/lib/store/sessions";
 import { useProjects } from "@/lib/store/projects";
+import { useSessionTemplates } from "@/lib/store/templates";
 import { cn } from "@/lib/utils";
 import type { SessionType } from "@/lib/types";
 
@@ -20,9 +21,11 @@ export function NewSessionDialog({
   const [title, setTitle] = useState("");
   const [artist, setArtist] = useState("");
   const [projectId, setProjectId] = useState<string | null>(defaultProjectId ?? null);
+  const [templateId, setTemplateId] = useState<string>("");
   const [busy, setBusy] = useState(false);
-  const { create } = useSessions();
+  const { create, update } = useSessions();
   const { projects } = useProjects();
+  const { templates } = useSessionTemplates(type);
   const nav = useNavigate();
 
   const submit = async (e: React.FormEvent) => {
@@ -31,7 +34,9 @@ export function NewSessionDialog({
     setBusy(true);
     try {
       const s = await create(type, title, artist, projectId);
-      setTitle(""); setArtist("");
+      const template = templates.find((t) => t.id === templateId);
+      if (template) await update(s.id, template.data);
+      setTitle(""); setArtist(""); setTemplateId("");
       onOpenChange(false);
       nav(`/session/${s.id}`);
     } finally {
@@ -55,7 +60,7 @@ export function NewSessionDialog({
               { v: "live", label: "Live", desc: "Patch - Monitors - Setlist", icon: Radio, color: "text-success" },
               { v: "compose", label: "Compose", desc: "Lyrics - Structure - Ideas", icon: PenLine, color: "text-accent" },
             ] as const).map((o) => (
-              <button type="button" key={o.v} onClick={() => setType(o.v)}
+              <button type="button" key={o.v} onClick={() => { setType(o.v); setTemplateId(""); }}
                 className={cn(
                   "panel p-4 text-left transition-all",
                   type === o.v ? "ring-1 ring-primary border-primary/50" : "opacity-70 hover:opacity-100"
@@ -83,6 +88,20 @@ export function NewSessionDialog({
             <Input id="artist" value={artist} onChange={(e) => setArtist(e.target.value)}
               placeholder="e.g. The Band" className="bg-input border-border" />
           </div>
+          {templates.length > 0 && (
+            <div className="space-y-2">
+              <Label htmlFor="template" className="label-mono flex items-center gap-1.5">
+                <FileStack className="h-3.5 w-3.5" /> Start from template
+              </Label>
+              <select id="template" value={templateId} onChange={(e) => setTemplateId(e.target.value)}
+                className="w-full bg-input border border-border rounded-sm px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-primary">
+                <option value="">— Blank session —</option>
+                {templates.map((t) => (
+                  <option key={t.id} value={t.id}>{t.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
           <div className="space-y-2">
             <Label htmlFor="project" className="label-mono">Project</Label>
             <select id="project" value={projectId ?? ""} onChange={(e) => setProjectId(e.target.value || null)}
