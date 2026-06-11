@@ -7,6 +7,7 @@ import { useProjects } from "@/lib/store/projects";
 import { useProfile, formatCurrency } from "@/lib/store/profile";
 import { cn } from "@/lib/utils";
 import type { InvoiceStatus } from "@/lib/types";
+import { toast } from "@/hooks/use-toast";
 
 const statusColors: Record<InvoiceStatus, string> = {
   draft: "bg-surface-3 text-muted-foreground border-border",
@@ -23,8 +24,12 @@ const Invoices = () => {
   const nav = useNavigate();
 
   const onCreate = async () => {
-    const inv = await create({ currency: profile.currency || "EUR" });
-    nav(`/invoices/${inv.id}`);
+    try {
+      const inv = await create({ currency: profile.currency || "EUR" });
+      nav(`/invoices/${inv.id}`);
+    } catch (err: any) {
+      toast({ title: "Could not create invoice", description: err?.message ?? "Try again.", variant: "destructive" });
+    }
   };
 
   return (
