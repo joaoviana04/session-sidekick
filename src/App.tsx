@@ -18,6 +18,9 @@ const Auth = lazy(() => import("./pages/Auth.tsx"));
 const Projects = lazy(() => import("./pages/Projects.tsx"));
 const ProjectView = lazy(() => import("./pages/ProjectView.tsx"));
 const Clients = lazy(() => import("./pages/Clients.tsx"));
+const Invoices = lazy(() => import("./pages/Invoices.tsx"));
+const InvoiceView = lazy(() => import("./pages/InvoiceView.tsx"));
+const Calendar = lazy(() => import("./pages/Calendar.tsx"));
 const Share = lazy(() => import("./pages/Share.tsx"));
 const Landing = lazy(() => import("./pages/Landing.tsx"));
 const Profile = lazy(() => import("./pages/Profile.tsx"));
@@ -67,6 +70,9 @@ const App = () => (
                 <Route path="/projects" element={<ProtectedRoute><Projects /></ProtectedRoute>} />
                 <Route path="/projects/:id" element={<ProtectedRoute><ProjectView /></ProtectedRoute>} />
                 <Route path="/clients" element={<ProtectedRoute><Clients /></ProtectedRoute>} />
+                <Route path="/invoices" element={<ProtectedRoute><Invoices /></ProtectedRoute>} />
+                <Route path="/invoices/:id" element={<ProtectedRoute><InvoiceView /></ProtectedRoute>} />
+                <Route path="/calendar" element={<ProtectedRoute><Calendar /></ProtectedRoute>} />
                 <Route path="/session/:id" element={<ProtectedRoute><SessionView /></ProtectedRoute>} />
                 <Route path="/session/:id/show" element={<ProtectedRoute><SessionShowMode /></ProtectedRoute>} />
                 <Route path="/tools" element={<ProtectedRoute><Tools /></ProtectedRoute>} />

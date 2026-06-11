@@ -1,6 +1,7 @@
 import { Plus, Trash2, Music } from "lucide-react";
 import { useSession, helpers } from "@/lib/store/sessions";
 import type { Session } from "@/lib/types";
+import { AudioAttachment } from "@/components/console/AudioAttachment";
 
 export function References({ session }: { session: Session }) {
   const { update } = useSession(session.id);
@@ -42,6 +43,13 @@ export function References({ session }: { session: Session }) {
               placeholder="What to learn from this ref"
               rows={1}
               className="col-span-12 col-start-2 bg-transparent px-2 py-1 rounded-sm hover:bg-surface-2 focus:bg-surface-2 outline-none focus:ring-1 focus:ring-primary text-xs resize-none" />
+            <div className="col-span-12 col-start-2">
+              <AudioAttachment
+                fileUrl={r.fileUrl}
+                fileName={r.fileName}
+                onChange={(next) => setRefs((a) => a.map((x) => x.id === r.id ? { ...x, ...next } : x))}
+              />
+            </div>
           </div>
         ))}
         {refs.length === 0 && <div className="p-8 text-center text-muted-foreground text-sm">No references yet.</div>}
