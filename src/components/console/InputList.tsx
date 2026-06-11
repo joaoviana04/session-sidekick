@@ -1,4 +1,4 @@
-import { Plus, Trash2, Table2, Workflow } from "lucide-react";
+import { Plus, Trash2, Table2, Workflow, Cable } from "lucide-react";
 import { useState } from "react";
 import { useSession, helpers } from "@/lib/store/sessions";
 import type { Session } from "@/lib/types";
@@ -48,13 +48,16 @@ export function InputList({ session }: { session: Session }) {
 
   return (
     <div className="panel overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-        <div>
-          <div className="font-display font-semibold">{isLive ? "Patch List" : "Input List"}</div>
-          <div className="label-mono mt-0.5">{inputs.length} channels</div>
+      <div className="panel-header">
+        <div className="panel-icon">
+          <Cable className="h-4 w-4" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="panel-title">{isLive ? "Patch List" : "Input List"}</div>
+          <div className="panel-subtitle">{inputs.length} channels</div>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex items-center rounded-sm bg-surface-2 border border-border overflow-hidden">
+          <div className="flex items-center rounded-lg bg-surface-2 border border-border overflow-hidden">
             <button
               onClick={() => setViewPersist("table")}
               className={cn(
@@ -77,7 +80,7 @@ export function InputList({ session }: { session: Session }) {
             </button>
           </div>
         <Popover open={popOpen} onOpenChange={setPopOpen}>
-          <PopoverTrigger className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-sm bg-surface-2 hover:bg-surface-3 transition">
+          <PopoverTrigger className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg bg-surface-2 hover:bg-surface-3 transition">
             <Plus className="h-3.5 w-3.5" /> Add channels
           </PopoverTrigger>
           <PopoverContent align="end" className="w-56 p-3 space-y-2">

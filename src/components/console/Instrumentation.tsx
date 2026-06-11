@@ -1,4 +1,4 @@
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Guitar } from "lucide-react";
 import { useSession, helpers } from "@/lib/store/sessions";
 import type { Session, InstrumentationItem } from "@/lib/types";
 
@@ -17,13 +17,16 @@ export function Instrumentation({ session }: { session: Session }) {
 
   return (
     <div className="panel">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-        <div>
-          <div className="font-display font-semibold">Instrumentation</div>
-          <div className="label-mono mt-0.5">{items.length} parts</div>
+      <div className="panel-header">
+        <div className="panel-icon">
+          <Guitar className="h-4 w-4" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="panel-title">Instrumentation</div>
+          <div className="panel-subtitle">{items.length} parts</div>
         </div>
         <button onClick={add}
-          className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-sm bg-surface-2 hover:bg-surface-3 transition">
+          className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg bg-surface-2 hover:bg-surface-3 transition shrink-0">
           <Plus className="h-3.5 w-3.5" /> Part
         </button>
       </div>

@@ -2,58 +2,61 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here.
 All colors MUST be HSL.
 */
 
 @layer base {
   :root {
-    /* Studio dark — deep neutrals + amber LED accent */
-    --background: 0 0% 6%;
-    --foreground: 40 15% 92%;
+    /* Studio dark — deep cool neutrals + amber accent, violet for secondary highlights */
+    --background: 240 6% 6%;
+    --foreground: 40 20% 95%;
 
-    --card: 0 0% 9%;
-    --card-foreground: 40 15% 92%;
+    --card: 240 6% 10%;
+    --card-foreground: 40 20% 95%;
 
-    --popover: 0 0% 8%;
-    --popover-foreground: 40 15% 92%;
+    --popover: 240 6% 9%;
+    --popover-foreground: 40 20% 95%;
 
-    /* Amber LED — like outboard meters */
+    /* Amber — primary accent, used for key actions */
     --primary: 36 95% 55%;
-    --primary-foreground: 0 0% 6%;
+    --primary-foreground: 0 0% 8%;
 
-    --secondary: 0 0% 13%;
-    --secondary-foreground: 40 15% 92%;
+    --secondary: 240 5% 14%;
+    --secondary-foreground: 40 20% 95%;
 
-    --muted: 0 0% 12%;
-    --muted-foreground: 40 5% 58%;
+    --muted: 240 5% 13%;
+    --muted-foreground: 240 6% 64%;
 
-    --accent: 36 95% 55%;
-    --accent-foreground: 0 0% 6%;
+    /* Violet — secondary accent for compose/creative contexts */
+    --accent: 262 83% 70%;
+    --accent-foreground: 0 0% 8%;
 
-    --destructive: 0 75% 55%;
-    --destructive-foreground: 40 15% 92%;
+    --destructive: 0 75% 58%;
+    --destructive-foreground: 40 20% 95%;
 
-    --success: 142 70% 45%;
+    --success: 152 60% 48%;
     --warning: 36 95% 55%;
-    --info: 200 90% 60%;
+    --info: 199 89% 60%;
 
-    --border: 0 0% 16%;
-    --input: 0 0% 14%;
+    --border: 240 5% 18%;
+    --input: 240 5% 15%;
     --ring: 36 95% 55%;
 
-    --radius: 0.625rem;
+    --radius: 0.75rem;
 
-    /* Surfaces */
-    --surface-1: 0 0% 8%;
-    --surface-2: 0 0% 11%;
-    --surface-3: 0 0% 14%;
+    /* Surfaces — increasing elevation */
+    --surface-1: 240 6% 9%;
+    --surface-2: 240 5% 13%;
+    --surface-3: 240 5% 18%;
 
     /* Gradients & shadows */
-    --gradient-amber: linear-gradient(135deg, hsl(36 95% 55%), hsl(28 95% 50%));
-    --gradient-panel: linear-gradient(180deg, hsl(0 0% 10%), hsl(0 0% 7%));
-    --shadow-panel: 0 1px 0 hsl(0 0% 100% / 0.04) inset, 0 8px 24px -12px hsl(0 0% 0% / 0.6);
-    --shadow-led: 0 0 12px hsl(36 95% 55% / 0.5), 0 0 2px hsl(36 95% 55% / 0.8);
+    --gradient-amber: linear-gradient(135deg, hsl(36 95% 58%), hsl(28 95% 50%));
+    --gradient-violet: linear-gradient(135deg, hsl(262 83% 72%), hsl(280 75% 60%));
+    --gradient-panel: linear-gradient(180deg, hsl(240 6% 11%), hsl(240 6% 8%));
+    --shadow-panel: 0 1px 0 hsl(0 0% 100% / 0.04) inset, 0 12px 32px -16px hsl(0 0% 0% / 0.65);
+    --shadow-card-hover: 0 1px 0 hsl(0 0% 100% / 0.05) inset, 0 16px 40px -16px hsl(0 0% 0% / 0.7);
+    --shadow-led: 0 0 10px hsl(36 95% 55% / 0.45), 0 0 2px hsl(36 95% 55% / 0.7);
 
     --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
     --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -86,8 +89,8 @@ All colors MUST be HSL.
     font-family: var(--font-display);
     font-feature-settings: "ss01", "cv11";
     background-image:
-      radial-gradient(1200px 600px at 80% -10%, hsl(36 95% 55% / 0.05), transparent 60%),
-      radial-gradient(900px 500px at -10% 110%, hsl(200 90% 60% / 0.04), transparent 60%);
+      radial-gradient(1200px 600px at 80% -10%, hsl(36 95% 55% / 0.06), transparent 60%),
+      radial-gradient(900px 600px at -10% 110%, hsl(262 83% 65% / 0.05), transparent 60%);
     background-attachment: fixed;
   }
 
@@ -98,7 +101,26 @@ All colors MUST be HSL.
   .panel {
     background: var(--gradient-panel);
     box-shadow: var(--shadow-panel);
-    @apply border border-border rounded-md;
+    @apply border border-border/80 rounded-xl;
+  }
+  .panel-interactive {
+    @apply transition-all duration-200;
+  }
+  .panel-interactive:hover {
+    box-shadow: var(--shadow-card-hover);
+    @apply border-border;
+  }
+  .panel-header {
+    @apply flex items-center gap-3 px-5 py-4 border-b border-border/70;
+  }
+  .panel-icon {
+    @apply h-9 w-9 rounded-lg bg-surface-2 grid place-items-center text-primary shrink-0;
+  }
+  .panel-title {
+    @apply font-display font-semibold leading-tight text-[15px] truncate;
+  }
+  .panel-subtitle {
+    @apply text-xs text-muted-foreground mt-0.5;
   }
   .led {
     @apply inline-block h-1.5 w-1.5 rounded-full;

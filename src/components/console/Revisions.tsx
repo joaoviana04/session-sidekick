@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Trash2, Share2, Copy, Check, X, MessageSquare } from "lucide-react";
+import { Plus, Trash2, Share2, Copy, Check, X, MessageSquare, GitBranch } from "lucide-react";
 import { useSession, helpers } from "@/lib/store/sessions";
 import { useSessionShares } from "@/lib/store/shares";
 import type { Session, RevisionStatus } from "@/lib/types";
@@ -50,16 +50,19 @@ export function Revisions({ session }: { session: Session }) {
 
   return (
     <div className="panel">
-      <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-        <div>
-          <div className="font-display font-semibold">Revisions</div>
-          <div className="label-mono mt-0.5">Client feedback log</div>
+      <div className="panel-header">
+        <div className="panel-icon">
+          <GitBranch className="h-4 w-4" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="panel-title">Revisions</div>
+          <div className="panel-subtitle">Client feedback log</div>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShareOpen((v) => !v)}
             className={cn(
-              "flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-sm border transition",
+              "flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border transition",
               activeShare
                 ? "border-success/40 text-success bg-success/10"
                 : "border-border text-muted-foreground hover:bg-surface-2",
@@ -68,7 +71,7 @@ export function Revisions({ session }: { session: Session }) {
           >
             <Share2 className="h-3.5 w-3.5" /> Share
           </button>
-          <button onClick={addRev} className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-sm bg-gradient-amber text-primary-foreground font-semibold">
+          <button onClick={addRev} className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg bg-gradient-amber text-primary-foreground font-semibold">
             <Plus className="h-3.5 w-3.5" /> Revision
           </button>
         </div>

@@ -77,10 +77,12 @@ export default {
       },
       backgroundImage: {
         "gradient-amber": "var(--gradient-amber)",
+        "gradient-violet": "var(--gradient-violet)",
         "gradient-panel": "var(--gradient-panel)",
       },
       boxShadow: {
         panel: "var(--shadow-panel)",
+        "card-hover": "var(--shadow-card-hover)",
         led: "var(--shadow-led)",
       },
       keyframes: {

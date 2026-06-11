@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from "react";
+import { PenLine } from "lucide-react";
 import { useSession } from "@/lib/store/sessions";
 import type { Session } from "@/lib/types";
 
@@ -17,12 +18,15 @@ export function Lyrics({ session }: { session: Session }) {
 
   return (
     <div className="panel">
-      <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-        <div>
-          <div className="font-display font-semibold">Lyrics</div>
-          <div className="label-mono mt-0.5">Use [Verse 1], [Chorus]… to mark sections</div>
+      <div className="panel-header">
+        <div className="panel-icon">
+          <PenLine className="h-4 w-4" />
         </div>
-        <div className="label-mono tabular-nums">{lines} lines · {words} words</div>
+        <div className="min-w-0 flex-1">
+          <div className="panel-title">Lyrics</div>
+          <div className="panel-subtitle">Use [Verse 1], [Chorus]… to mark sections</div>
+        </div>
+        <div className="label-mono tabular-nums shrink-0">{lines} lines · {words} words</div>
       </div>
       <textarea
         value={value}
