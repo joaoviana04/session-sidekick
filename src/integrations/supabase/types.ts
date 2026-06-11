@@ -41,69 +41,6 @@ export type Database = {
         }
         Relationships: []
       }
-      invoices: {
-        Row: {
-          client_id: string | null
-          created_at: string
-          currency: string
-          due_date: string | null
-          id: string
-          issue_date: string
-          items: Json
-          notes: string | null
-          number: string
-          project_id: string | null
-          status: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          client_id?: string | null
-          created_at?: string
-          currency?: string
-          due_date?: string | null
-          id?: string
-          issue_date?: string
-          items?: Json
-          notes?: string | null
-          number?: string
-          project_id?: string | null
-          status?: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          client_id?: string | null
-          created_at?: string
-          currency?: string
-          due_date?: string | null
-          id?: string
-          issue_date?: string
-          items?: Json
-          notes?: string | null
-          number?: string
-          project_id?: string | null
-          status?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "invoices_client_id_fkey"
-            columns: ["client_id"]
-            isOneToOne: false
-            referencedRelation: "clients"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "invoices_project_id_fkey"
-            columns: ["project_id"]
-            isOneToOne: false
-            referencedRelation: "projects"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -272,33 +209,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      session_templates: {
-        Row: {
-          created_at: string
-          data: Json
-          id: string
-          name: string
-          type: Database["public"]["Enums"]["session_type"]
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          data?: Json
-          id?: string
-          name: string
-          type: Database["public"]["Enums"]["session_type"]
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          data?: Json
-          id?: string
-          name?: string
-          type?: Database["public"]["Enums"]["session_type"]
-          user_id?: string
-        }
-        Relationships: []
       }
       sessions: {
         Row: {
