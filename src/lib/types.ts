@@ -221,3 +221,17 @@ export interface SessionTemplate {
   data: Partial<Session>;
   createdAt: string;
 }
+
+// ===== Calendar events =====
+export interface CalendarEvent {
+  id: string;
+  title: string;
+  startsAt: string; // ISO
+  endsAt: string | null; // ISO
+  allDay: boolean;
+  location: string;
+  notes: string;
+  color: string;
+  sessionId: string | null;
+  createdAt: string;
+}
