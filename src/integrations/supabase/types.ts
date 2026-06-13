@@ -14,6 +14,59 @@ export type Database = {
   }
   public: {
     Tables: {
+      calendar_events: {
+        Row: {
+          all_day: boolean
+          color: string
+          created_at: string
+          ends_at: string | null
+          id: string
+          location: string
+          notes: string
+          session_id: string | null
+          starts_at: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          all_day?: boolean
+          color?: string
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          location?: string
+          notes?: string
+          session_id?: string | null
+          starts_at: string
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          all_day?: boolean
+          color?: string
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          location?: string
+          notes?: string
+          session_id?: string | null
+          starts_at?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calendar_events_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clients: {
         Row: {
           created_at: string
